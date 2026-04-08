@@ -1,0 +1,29 @@
+{
+    "schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "dependencies": {
+        "axios": "^1.11.0",
+        "bootstrap": "^5.2.3",
+        "vue": "^3.5.29",
+        "vue-router": "^5.0.3",
+        "vuex": "^4.1.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@popperjs/core": "^2.11.6",
+        "@vitejs/plugin-vue": "^6.0.4",
+        "concurrently": "^9.0.1",
+        "eslint": "^10.0.3",
+        "eslint-plugin-vue": "^10.8.0",
+        "globals": "^17.4.0",
+        "laravel-vite-plugin": "^2.0.0",
+        "sass": "^1.97.3",
+        "vite": "^7.0.7",
+        "vue-eslint-parser": "^10.2.0"
+    }
+}
