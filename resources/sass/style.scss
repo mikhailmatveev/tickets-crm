@@ -1,1 +1,12 @@
-@use "bootstrap";
+@use '@picocss/pico/scss/pico' with (
+  $theme-color: 'violet'
+);
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    #app {
+        height: inherit;
+    }
+}
