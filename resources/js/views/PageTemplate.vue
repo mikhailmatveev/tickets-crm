@@ -28,12 +28,11 @@ export default {
   display: flex;
   height: 100%;
   .sidebar {
-    width: 280px;
     flex-shrink: 0;
     overflow-y: auto; /* Прокрутка, если меню длинное */
     & + main {
       display: flex;
-      padding: 30px 0;
+      padding: 30px;
       flex-direction: column;
       flex-grow: 1; /* Занимает всю оставшуюся ширину */
       overflow: hidden;
