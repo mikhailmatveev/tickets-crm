@@ -13,21 +13,21 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
         // Права
-        Permission::create(['name' => PermissionEnum::CHANGE_TICKET_STATUS]);
-        Permission::create(['name' => PermissionEnum::CHANGE_USER_PASSWORD]);
-        Permission::create(['name' => PermissionEnum::CHANGE_USER_ROLE]);
-        Permission::create(['name' => PermissionEnum::CREATE_USER]);
-        Permission::create(['name' => PermissionEnum::DELETE_USER]);
-        Permission::create(['name' => PermissionEnum::REPLY_ON_TICKET]);
-        Permission::create(['name' => PermissionEnum::VIEW_API_DOCS]);
-        Permission::create(['name' => PermissionEnum::VIEW_TELESCOPE]);
-        Permission::create(['name' => PermissionEnum::VIEW_TICKET_DETAILS]);
-        Permission::create(['name' => PermissionEnum::VIEW_TICKET_STATS]);
-        Permission::create(['name' => PermissionEnum::VIEW_TICKETS]);
+        Permission::firstOrCreate(['name' => PermissionEnum::CHANGE_TICKET_STATUS]);
+        Permission::firstOrCreate(['name' => PermissionEnum::CHANGE_USER_PASSWORD]);
+        Permission::firstOrCreate(['name' => PermissionEnum::CHANGE_USER_ROLE]);
+        Permission::firstOrCreate(['name' => PermissionEnum::CREATE_USER]);
+        Permission::firstOrCreate(['name' => PermissionEnum::DELETE_USER]);
+        Permission::firstOrCreate(['name' => PermissionEnum::REPLY_ON_TICKET]);
+        Permission::firstOrCreate(['name' => PermissionEnum::VIEW_API_DOCS]);
+        Permission::firstOrCreate(['name' => PermissionEnum::VIEW_TELESCOPE]);
+        Permission::firstOrCreate(['name' => PermissionEnum::VIEW_TICKET_DETAILS]);
+        Permission::firstOrCreate(['name' => PermissionEnum::VIEW_TICKET_STATS]);
+        Permission::firstOrCreate(['name' => PermissionEnum::VIEW_TICKETS]);
 
         // Роли
-        $admin = Role::create(['name' => RoleEnum::ADMIN]);
-        $manager = Role::create(['name' => RoleEnum::MANAGER]);
+        $admin = Role::firstOrCreate(['name' => RoleEnum::ADMIN]);
+        $manager = Role::firstOrCreate(['name' => RoleEnum::MANAGER]);
 
         // Админу назначаем полный доступ
         $admin->givePermissionTo(Permission::all());
