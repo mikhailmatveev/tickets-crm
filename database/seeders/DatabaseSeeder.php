@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
      * Наполняем базу данными:
      * RoleAndPermissionSeeder назначает права группе пользователей
      * AdminSeeder создаёт главного администратора
+     *
+     * Только для локальной и dev версии:
      * UserSeeder создаёт фейковых администраторов и менеджеров
      * CustomerSeeder создаёт новых клиентов
      * TicketSeeder создаёт новые тикеты и связывает их с клиентами
@@ -22,11 +24,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleAndPermissionSeeder::class,
-            AdminSeeder::class,
-            UserSeeder::class,
-            CustomerSeeder::class,
-            TicketSeeder::class,
-            TicketReplySeeder::class
+            AdminSeeder::class
         ]);
+        // Наполнение базы фейковыми данными только для локальной и dev версии
+        if (app()->environment('local', 'development')) {
+            $this->call([
+                UserSeeder::class,
+                CustomerSeeder::class,
+                TicketSeeder::class,
+                TicketReplySeeder::class
+            ]);
+        }
     }
 }
