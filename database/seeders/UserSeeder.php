@@ -10,12 +10,12 @@ class UserSeeder extends Seeder
     /**
      * Кол-во фейковых администраторов
      */
-    public const int ADMIN_USERS_COUNT = 2;
+    public const int ADMIN_USERS_COUNT = 1;
 
     /**
      * Кол-во фейковых менеджеров
      */
-    public const int MANAGER_USERS_COUNT = 3;
+    public const int MANAGER_USERS_COUNT = 2;
 
     public function run(): void
     {
