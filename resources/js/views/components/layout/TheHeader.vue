@@ -56,7 +56,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.header {
-  border-bottom: 1px #333 solid;
-}
+
 </style>

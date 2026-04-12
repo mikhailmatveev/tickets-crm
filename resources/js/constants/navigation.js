@@ -7,6 +7,11 @@ export default [
     roles: [roles.ADMIN, roles.MANAGER]
   },
   {
+    name: 'Statistics',
+    label: 'Статистика',
+    roles: [roles.ADMIN, roles.MANAGER]
+  },
+  {
     name: 'Users',
     label: 'Пользователи',
     roles: [roles.ADMIN]
