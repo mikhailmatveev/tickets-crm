@@ -72,4 +72,8 @@ export default {
   margin-top: 50px;
   max-width: 540px;
 }
+
+table {
+  margin-top: 30px;
+}
 </style>
