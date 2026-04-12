@@ -8,13 +8,11 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class SeederTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Проверяет, что существует хотя бы один админ
      * @return void
@@ -24,10 +22,7 @@ class SeederTest extends TestCase
         $this->assertNotEquals(
             0,
             User::query()
-                ->whereHas(
-                    'user',
-                    fn ($query) => $query->role(Role::ADMIN)
-                )
+                ->role(Role::ADMIN)
                 ->count()
         );
     }
@@ -99,5 +94,12 @@ class SeederTest extends TestCase
                 )
                 ->count()
         );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->app->make(PermissionRegistrar::class)
+            ->forgetCachedPermissions();
     }
 }
