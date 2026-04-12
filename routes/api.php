@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -10,4 +11,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn (Request $request) => new UserResource($request->user()));
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/roles', [RolesController::class, 'index']);
+    Route::get('/tickets', [TicketController::class, 'index']);
 });

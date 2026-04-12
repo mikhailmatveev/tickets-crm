@@ -13,6 +13,10 @@ class Http {
     return await this.client.get('/api/roles')
   }
 
+  async getTickets () {
+    return await this.client.get('/api/tickets')
+  }
+
   async getUser () {
     return await this.client.get('/api/user')
   }
