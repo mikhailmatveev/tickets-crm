@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Ticket\Status;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,5 +69,45 @@ class Ticket extends Model implements HasMedia
     public function replies(): HasMany
     {
         return $this->hasMany(TicketReply::class);
+    }
+
+    /**
+     * Фильтр для статистики тикетов за текущую неделю
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisDay(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query->whereDate('manager_replied_at', $today);
+    }
+
+    /**
+     * Фильтр для статистики тикетов за текущую неделю
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisWeek(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query->whereBetween('manager_replied_at', [
+            $today->startOfWeek(),
+            $today->endOfWeek()
+        ]);
+    }
+
+
+    /**
+     * Фильтр для статистики тикетов за текущий месяц
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisMonth(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query
+            ->whereYear('manager_replied_at', $today->year)
+            ->whereMonth('manager_replied_at', $today->month)
+        ;
     }
 }
