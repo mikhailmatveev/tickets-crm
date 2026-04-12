@@ -3,10 +3,10 @@
   <table>
     <thead>
       <tr>
+        <th>Тема</th>
         <th>Имя клиента</th>
         <th>E-mail клиента</th>
         <th>Телефон клиента</th>
-        <th>Тема</th>
         <th>Статус</th>
         <th>Дата ответа менеджера</th>
       </tr>
@@ -16,10 +16,10 @@
         v-for="(item) in tickets"
         :key="item.id"
       >
+        <td>{{ item.subject }}</td>
         <td>{{ item.customer.name }}</td>
         <td>{{ item.customer.email }}</td>
         <td>{{ item.customer.phone }}</td>
-        <td>{{ item.subject }}</td>
         <td>{{ item.status }}</td>
         <td>{{ formatDate(item.manager_replied_at) }}</td>
       </tr>
