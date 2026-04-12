@@ -26,7 +26,7 @@ export default {
 <style scoped lang="scss">
 .flex-wrapper {
   display: flex;
-  height: 100%;
+  min-height: 100%;
   .sidebar {
     flex-shrink: 0;
     overflow-y: auto; /* Прокрутка, если меню длинное */
