@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\Api\StatisticController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Resources\UserResource;
@@ -12,4 +13,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/roles', [RolesController::class, 'index']);
     Route::get('/tickets', [TicketController::class, 'index']);
+    Route::get('/tickets/statistics', [StatisticController::class, 'index']);
 });

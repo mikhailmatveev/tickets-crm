@@ -17,6 +17,10 @@ class Http {
     return await this.client.get('/api/tickets')
   }
 
+  async getStatistics () {
+    return await this.client.get('/api/tickets/statistics')
+  }
+
   async getUser () {
     return await this.client.get('/api/user')
   }

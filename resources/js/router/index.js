@@ -17,6 +17,15 @@ const routes = [
           roles: [roles.ADMIN, roles.MANAGER]
         }
       }, {
+        path: '/statistics',
+        name: 'Statistics',
+        component: () => import(/* webpackChunkName: "home" */ '../views/Statistics.vue'),
+        meta: {
+          title: 'Статистика',
+          requiresAuth: true,
+          roles: [roles.ADMIN, roles.MANAGER]
+        }
+      }, {
         path: 'users',
         name: 'Users',
         component: () => import(/* webpackChunkName: "home" */ '../views/Users.vue'),
