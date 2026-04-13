@@ -1,5 +1,19 @@
 <template>
   <h1>Статистика</h1>
+  <div
+    role="group"
+    class="date-filers"
+  >
+    <button @click="selectPeriod('day')">
+      За день
+    </button>
+    <button @click="selectPeriod('week')">
+      За неделю
+    </button>
+    <button @click="selectPeriod('month')">
+      За месяц
+    </button>
+  </div>
   <table>
     <thead>
       <tr>
@@ -29,25 +43,37 @@ export default {
   name: 'Statistics',
   data() {
     return {
+      periodSelected: 'day',
       statistics: []
     }
   },
   mounted() {
-    this.getStatistics()
+    this.getStatistics(this.periodSelected)
   },
   methods: {
     async getStatistics() {
       try {
-        const response = await http.getStatistics()
+        const response = await http.getStatistics(this.periodSelected)
         this.statistics = response.data
       } catch (e) {
         console.log(e)
       }
+    },
+    selectPeriod(period) {
+      this.periodSelected = period
+      this.getStatistics()
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.date-filers {
+  margin-top: 30px;
+  max-width: 540px;
+}
 
+table {
+  margin-top: 30px;
+}
 </style>

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Ticket\Status;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +32,12 @@ class Ticket extends Model implements HasMedia
         ];
     }
 
+    /**
+     * Обновляет статус тикету и если тикету присваивается статус "Выполнено",
+     * то обновляется и manager_replied_at
+     * @param Status $status
+     * @return void
+     */
     public function changeStatus(Status $status): void
     {
         $this->status = $status;
@@ -44,16 +52,28 @@ class Ticket extends Model implements HasMedia
         }
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "Новый"
+     * @return bool
+     */
     public function isNew(): bool
     {
         return $this->status === Status::NEW;
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "В работе"
+     * @return bool
+     */
     public function isWorking(): bool
     {
         return $this->status === Status::WORKING;
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "Выполнено"
+     * @return bool
+     */
     public function isDone(): bool
     {
         return $this->status === Status::DONE;
@@ -67,5 +87,45 @@ class Ticket extends Model implements HasMedia
     public function replies(): HasMany
     {
         return $this->hasMany(TicketReply::class);
+    }
+
+    /**
+     * Фильтр для статистики тикетов за текущую неделю
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisDay(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query->whereDate('manager_replied_at', $today);
+    }
+
+    /**
+     * Фильтр для статистики тикетов за текущую неделю
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisWeek(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query->whereBetween('manager_replied_at', [
+            $today->startOfWeek(),
+            $today->endOfWeek()
+        ]);
+    }
+
+
+    /**
+     * Фильтр для статистики тикетов за текущий месяц
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeRepliedThisMonth(Builder $query): Builder
+    {
+        $today = Carbon::today();
+        return $query
+            ->whereYear('manager_replied_at', $today->year)
+            ->whereMonth('manager_replied_at', $today->month)
+        ;
     }
 }

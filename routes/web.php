@@ -8,4 +8,4 @@ Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 Route::get('/{any}', function () {
     return view('index');
-})->where('any', '.*');
+})->where('any', '^(?!api).*$');

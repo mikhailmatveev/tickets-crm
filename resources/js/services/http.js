@@ -17,8 +17,16 @@ class Http {
     return await this.client.get('/api/tickets')
   }
 
-  async getStatistics () {
-    return await this.client.get('/api/tickets/statistics')
+  async getStatistics (period) {
+    return await this.client.get('/api/tickets/statistics', {
+      params: {
+        period
+      }
+    })
+  }
+
+  async getTicketDetails (id) {
+    return await this.client.get(`/api/ticket/${id}`)
   }
 
   async getUser () {
