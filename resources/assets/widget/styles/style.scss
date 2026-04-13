@@ -1,0 +1,8 @@
+@use '../../../sass/style';
+
+#widget {
+    display: flex;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+}

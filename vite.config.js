@@ -11,7 +11,9 @@ export default defineConfig(({mode}) => {
       laravel({
         input: [
           'resources/sass/style.scss',
-          'resources/js/app.js'
+          'resources/js/app.js',
+          'resources/assets/widget/styles/style.scss',
+          'resources/assets/widget/scripts/script.js'
         ],
         refresh: true,
       }),

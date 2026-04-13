@@ -16,3 +16,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ticket/{id}', [TicketController::class, 'show']);
     Route::get('/tickets/statistics', [StatisticController::class, 'index']);
 });
+
+// API-метод для виджета
+Route::post('/ticket/create', [TicketController::class, 'create']);
