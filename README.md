@@ -8,7 +8,8 @@
 3. `Настроить .env`
 4. `composer install`
 5. `php artisan key:generate`
-6. `npm install`
+6. `php artisan telescope:install`
+7. `npm install`
 
 ## Админ
 
@@ -74,6 +75,15 @@ Duration: 0.37s
 `npm run build`
 
 Первый вариант отслеживает изменение файлов и автоматически обновляет сборку. Второй - больше подходит для `prod`
+
+## Telescope
+
+Чтобы включить Telescope в `.env` надо добавить параметр
+```
+TELESCOPE_ENABLED=true
+```
+
+После чего сервис будет доступен по адресу `/telescope`
 
 ## Документация
 
