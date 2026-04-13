@@ -13,5 +13,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/roles', [RolesController::class, 'index']);
     Route::get('/tickets', [TicketController::class, 'index']);
+    Route::get('/ticket/{id}', [TicketController::class, 'show']);
     Route::get('/tickets/statistics', [StatisticController::class, 'index']);
 });
