@@ -8,8 +8,9 @@
 3. `Настроить .env`
 4. `composer install`
 5. `php artisan key:generate`
-6. `php artisan telescope:install`
-7. `npm install`
+6. `php artisan key:generate --env=testing`
+7. `php artisan telescope:install`
+8. `npm install`
 
 ## Админ
 
