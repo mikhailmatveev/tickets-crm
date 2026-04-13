@@ -25,6 +25,10 @@ class Http {
     })
   }
 
+  async getTicketDetails (id) {
+    return await this.client.get(`/api/ticket/${id}`)
+  }
+
   async getUser () {
     return await this.client.get('/api/user')
   }

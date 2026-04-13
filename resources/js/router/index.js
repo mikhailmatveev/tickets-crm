@@ -17,6 +17,15 @@ const routes = [
           roles: [roles.ADMIN, roles.MANAGER]
         }
       }, {
+        path: '/ticket/:id',
+        name: 'TicketDetails',
+        component: () => import(/* webpackChunkName: "home" */ '../views/TicketDetails.vue'),
+        meta: {
+          title: 'Информация по тикету',
+          requiresAuth: true,
+          roles: [roles.ADMIN, roles.MANAGER]
+        }
+      }, {
         path: '/statistics',
         name: 'Statistics',
         component: () => import(/* webpackChunkName: "home" */ '../views/Statistics.vue'),
