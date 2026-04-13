@@ -32,6 +32,12 @@ class Ticket extends Model implements HasMedia
         ];
     }
 
+    /**
+     * Обновляет статус тикету и если тикету присваивается статус "Выполнено",
+     * то обновляется и manager_replied_at
+     * @param Status $status
+     * @return void
+     */
     public function changeStatus(Status $status): void
     {
         $this->status = $status;
@@ -46,16 +52,28 @@ class Ticket extends Model implements HasMedia
         }
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "Новый"
+     * @return bool
+     */
     public function isNew(): bool
     {
         return $this->status === Status::NEW;
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "В работе"
+     * @return bool
+     */
     public function isWorking(): bool
     {
         return $this->status === Status::WORKING;
     }
 
+    /**
+     * Проверяет, находится ли тикет в статусе "Выполнено"
+     * @return bool
+     */
     public function isDone(): bool
     {
         return $this->status === Status::DONE;
