@@ -1,4 +1,7 @@
-<h1>{{ $ticket->subject }}</h1>
+<hgroup>
+    <h1>{{ $ticket->subject }}</h1>
+    <p>Создано: {{ $ticket->created_at  }}</p>
+</hgroup>
 <p>
     <mark>{{ $ticket->status }}</mark>
 </p>
