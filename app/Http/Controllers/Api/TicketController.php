@@ -9,6 +9,7 @@ use App\Http\Resources\TicketResource;
 use App\Http\Resources\TicketCreateResource;
 use App\Models\Customer;
 use App\Models\Ticket;
+use App\Services\TicketService;
 use DB;
 use OpenApi\Attributes as OA;
 use RateLimiter;
@@ -16,6 +17,10 @@ use Throwable;
 
 class TicketController extends Controller
 {
+    public function __construct(
+        protected TicketService $ticketService
+    ) {}
+
     #[OA\Get(
         path: '/api/tickets',
         description: 'Возвращает список тикетов в связке с клиентом',
@@ -173,27 +178,19 @@ class TicketController extends Controller
                 'message' => 'Вы уже создавали заявку. Попробуйте через 24 часа.'
             ], 429);
         }
-        // Транзакция
-        $ticket = DB::transaction(function () use ($validated) {
-            // Пишем клиента, если нет в базе
-            $customer = Customer::firstOrCreate(
-                ['email' => $validated['email'], 'phone' => $validated['phone']],
-                ['name' => $validated['name']]
-            );
-            // Создаём тикет
-            return Ticket::create([
-                'customer_id' => $customer->id,
-                'subject' => $validated['subject'],
-                'text' => $validated['text'] ?? null,
-                'status' => Status::NEW
-            ]);
-        });
-        $ticket->load(['customer', 'replies']);
+
+        // TicketService
+        $ticket = $this->ticketService->create($validated);
 
         // Фиксируем попытку только после успеха (ограничение на сутки)
         RateLimiter::hit($key, 60 * 60 * 24);
 
-        return new TicketCreateResource($ticket)
+        return new TicketCreateResource(
+            $ticket->load([
+                'customer',
+                'replies'
+            ])
+        )
             ->response()
             ->setStatusCode(201);
     }
