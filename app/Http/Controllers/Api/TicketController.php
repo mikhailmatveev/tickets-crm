@@ -163,12 +163,21 @@ class TicketController extends Controller
     public function create(TicketStoreRequest $request)
     {
         $validated = $request->validated();
+
         // Ключ для RateLimiter
-        $key = 'ticket:create:' . md5(
-                $validated['email'] . '|' . $validated['phone']
-            );
+        $keyEmail = 'ticket:create:' . md5(
+            $validated['email']
+        );
+        // Ключ для RateLimiter
+        $keyPhone = 'ticket:create:' . md5(
+            $validated['phone']
+        );
+
         // Проверяем лимит
-        if (RateLimiter::tooManyAttempts($key, 1)) {
+        if (
+            RateLimiter::tooManyAttempts($keyEmail, 1) ||
+            RateLimiter::tooManyAttempts($keyPhone, 1)
+        ) {
             return response()->json([
                 'message' => 'Вы уже создавали заявку. Попробуйте через 24 часа.'
             ], 429);
@@ -190,8 +199,11 @@ class TicketController extends Controller
         });
         $ticket->load(['customer', 'replies']);
 
+        // Установка лимита на 24 часа
+        $decay = 60 * 60 * 24;
         // Фиксируем попытку только после успеха (ограничение на сутки)
-        RateLimiter::hit($key, 60 * 60 * 24);
+        RateLimiter::hit($keyEmail, $decay);
+        RateLimiter::hit($keyPhone, $decay);
 
         return new TicketCreateResource($ticket)
             ->response()
