@@ -1,7 +1,10 @@
-<h1>{{ $ticket->subject }}</h1>
-<p>
-    <mark>{{ $ticket->status }}</mark>
-</p>
+<hgroup>
+    <h1>
+        <mark>{{ $ticket->status }}</mark>
+        {{ $ticket->subject }}
+    </h1>
+    <p>Создано: {{ $ticket->created_at  }}</p>
+</hgroup>
 <hr>
 @if($ticket->customer)
 <article>E-mail: {{ $ticket->customer->email }}</article>
