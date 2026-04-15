@@ -28,9 +28,6 @@
     </summary>
     <blockquote>
         {{ $reply->text  }}
-        <footer>
-            <cite>{{ $reply->updated_at }}</cite>
-        </footer>
     </blockquote>
 </details>
 @endforeach
