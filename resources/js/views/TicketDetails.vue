@@ -1,8 +1,11 @@
 <template>
-  <h1>{{ details.subject }}</h1>
-  <p>
-    <mark>{{ details.status }}</mark>
-  </p>
+  <hgroup>
+    <h1>{{ details.subject }}</h1>
+    <p>
+      <mark>{{ details.status }}</mark>
+      Создано: {{ formatDate(details.created_at) }}
+    </p>
+  </hgroup>
   <hr>
   <div v-if="details.customer">
     <article>E-mail: {{ details.customer.email }}</article>
@@ -49,6 +52,7 @@
 </template>
 
 <script>
+import { formatDate } from '../mixins/helper'
 import http from '../services/http'
 import Modal from './components/Modal.vue'
 import Reply from './components/ui/Reply.vue'
@@ -74,6 +78,7 @@ export default {
     this.getTicketDetails(this.$route.params.id)
   },
   methods: {
+    formatDate,
     closeModal () {
       this.modal.isOpen = false
     },
