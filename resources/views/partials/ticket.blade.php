@@ -1,9 +1,11 @@
 <hgroup>
     <h1>
-        <mark>{{ $ticket->status }}</mark>
         {{ $ticket->subject }}
     </h1>
-    <p>Создано: {{ $ticket->created_at  }}</p>
+    <p>
+        <mark>{{ $ticket->status }}</mark>
+        Создано: {{ $ticket->created_at  }}
+    </p>
 </hgroup>
 <hr>
 @if($ticket->customer)
@@ -17,7 +19,7 @@
     </footer>
 </blockquote>
 @endif
-@if($ticket->replies)
+@if($ticket->replies && count($ticket->replies) > 0)
 <h3>Ответы менеджера</h3>
 @foreach($ticket->replies as $reply)
 <blockquote>
