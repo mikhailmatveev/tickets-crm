@@ -22,11 +22,13 @@
 @if($ticket->replies && count($ticket->replies) > 0)
 <h3>Ответы менеджера</h3>
 @foreach($ticket->replies as $reply)
-<blockquote>
-    {{ $reply->text }}
-    <footer>
-        <cite>{{ $reply->updated_at }}</cite>
-    </footer>
-</blockquote>
+<details>
+    <summary role="button">
+        {{ $reply->updated_at }}
+    </summary>
+    <blockquote>
+        {{ $reply->text  }}
+    </blockquote>
+</details>
 @endforeach
 @endif
