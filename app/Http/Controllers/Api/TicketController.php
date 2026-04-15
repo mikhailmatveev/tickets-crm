@@ -53,116 +53,147 @@ class TicketController extends Controller
         );
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/ticket/create",
-     *     summary="Создать тикет",
-     *     description="Создание нового тикета клиентом",
-     *     tags={"api"},
+    #[OA\Post(
+        path: '/api/ticket/create',
+        description: 'Создание нового тикета клиентом',
+        summary: 'Создать тикет',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name', 'email', 'phone', 'subject'],
+                properties: [
+                    new OA\Property(
+                        property: 'name',
+                        type: 'string',
+                        maxLength: 255,
+                        example: 'Иван Иванов'
+                    ),
+                    new OA\Property(
+                        property: 'email',
+                        type: 'string',
+                        format: 'email',
+                        maxLength: 255,
+                        example: 'test@example.com'
+                    ),
+                    new OA\Property(
+                        property: 'phone',
+                        type: 'string',
+                        maxLength: 20,
+                        example: '+79991234567'
+                    ),
+                    new OA\Property(
+                        property: 'subject',
+                        type: 'string',
+                        maxLength: 255,
+                        example: 'Проблема с заказом'
+                    ),
+                    new OA\Property(
+                        property: 'text',
+                        type: 'string',
+                        maxLength: 2000,
+                        example: 'Описание проблемы',
+                        nullable: true
+                    ),
+                ]
+            )
+        ),
 
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name","email","phone","subject"},
-     *
-     *             @OA\Property(property="name", type="string", maxLength=255, example="Иван Иванов"),
-     *             @OA\Property(property="email", type="string", format="email", maxLength=255, example="test@example.com"),
-     *             @OA\Property(property="phone", type="string", maxLength=20, example="+79991234567"),
-     *             @OA\Property(property="subject", type="string", maxLength=255, example="Проблема с заказом"),
-     *             @OA\Property(property="text", type="string", maxLength=2000, nullable=true, example="Описание проблемы")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=201,
-     *         description="Тикет успешно создан",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="customer_id", type="integer", example=1),
-     *             @OA\Property(property="subject", type="string", example="Проблема с заказом"),
-     *             @OA\Property(property="text", type="string", example="Описание проблемы"),
-     *             @OA\Property(property="status", type="string", example="new"),
-     *             @OA\Property(property="manager_replied_at", type="string", format="date-time", nullable=true),
-     *             @OA\Property(property="created_at", type="string", format="date-time"),
-     *             @OA\Property(property="updated_at", type="string", format="date-time"),
-     *
-     *             @OA\Property(
-     *                 property="customer",
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="Иван Иванов"),
-     *                 @OA\Property(property="email", type="string", example="test@example.com"),
-     *                 @OA\Property(property="phone", type="string", example="+79991234567")
-     *             ),
-     *
-     *             @OA\Property(
-     *                 property="replies",
-     *                 type="array",
-     *                 @OA\Items(type="object")
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *       response=422,
-     *         description="Ошибка валидации",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Данные не прошли валидацию."
-     *             ),
-     *             @OA\Property(
-     *                 property="errors",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="name",
-     *                     type="array",
-     *                     @OA\Items(type="string"),
-     *                     example={"Имя обязательно", "Имя не должно превышать 255 символов"}
-     *                 ),
-     *                 @OA\Property(
-     *                     property="email",
-     *                     type="array",
-     *                     @OA\Items(type="string"),
-     *                     example={"E-mail обязателен", "Некорректный формат E-mail", "E-mail не должен превышать 255 символов"}
-     *                 ),
-     *                 @OA\Property(
-     *                     property="phone",
-     *                     type="array",
-     *                     @OA\Items(type="string"),
-     *                     example={"Телефон обязателен", "Телефон не должен превышать 20 символов"}
-     *                 ),
-     *                 @OA\Property(
-     *                     property="subject",
-     *                     type="array",
-     *                     @OA\Items(type="string"),
-     *                     example={"Тема обращения обязательна", "Тема не должна превышать 255 символов"}
-     *                 ),
-     *                 @OA\Property(
-     *                     property="text",
-     *                     type="array",
-     *                     @OA\Items(type="string"),
-     *                     example={"Описание не должно превышать 2000 символов"}
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=429,
-     *         description="Слишком много запросов",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Вы уже создавали заявку. Попробуйте через 24 часа.")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=500,
-     *         description="Ошибка сервера"
-     *     )
-     * )
-     */
+        tags: ['api'],
+
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Тикет успешно создан',
+                content: new OA\JsonContent(
+                    ref: '#/components/schemas/Ticket'
+                )
+            ),
+
+            new OA\Response(
+                response: 422,
+                description: 'Ошибка валидации',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Данные не прошли валидацию'
+                        ),
+                        new OA\Property(
+                            property: 'errors',
+                            properties: [
+                                new OA\Property(
+                                    property: 'name',
+                                    type: 'array',
+                                    items: new OA\Items(type: 'string'),
+                                    example: [
+                                        'Имя обязательно',
+                                        'Имя не должно превышать 255 символов'
+                                    ]
+                                ),
+                                new OA\Property(
+                                    property: 'email',
+                                    type: 'array',
+                                    items: new OA\Items(type: 'string'),
+                                    example: [
+                                        'E-mail обязателен',
+                                        'Некорректный формат E-mail',
+                                        'E-mail не должен превышать 255 символов'
+                                    ]
+                                ),
+                                new OA\Property(
+                                    property: 'phone',
+                                    type: 'array',
+                                    items: new OA\Items(type: 'string'),
+                                    example: [
+                                        'Телефон обязателен',
+                                        'Телефон не должен превышать 20 символов'
+                                    ]
+                                ),
+                                new OA\Property(
+                                    property: 'subject',
+                                    type: 'array',
+                                    items: new OA\Items(type: 'string'),
+                                    example: [
+                                        'Тема обращения обязательна',
+                                        'Тема не должна превышать 255 символов'
+                                    ]
+                                ),
+                                new OA\Property(
+                                    property: 'text',
+                                    type: 'array',
+                                    items: new OA\Items(type: 'string'),
+                                    example: [
+                                        'Описание не должно превышать 2000 символов'
+                                    ]
+                                ),
+                            ],
+                            type: 'object'
+                        ),
+                    ]
+                )
+            ),
+
+            new OA\Response(
+                response: 429,
+                description: 'Слишком много запросов',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Вы уже создавали заявку. Попробуйте через 24 часа'
+                        )
+                    ]
+                )
+            ),
+
+            new OA\Response(
+                response: 500,
+                description: 'Ошибка сервера'
+            ),
+        ]
+    )]
     public function create(TicketStoreRequest $request)
     {
         $validated = $request->validated();
