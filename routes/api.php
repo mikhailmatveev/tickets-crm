@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RolesController::class, 'index']);
     Route::get('/tickets', [TicketController::class, 'index']);
     Route::get('/ticket/{id}', [TicketController::class, 'show']);
+    Route::put('/ticket/{id}', [TicketController::class, 'update']);
     Route::get('/tickets/statistics', [StatisticController::class, 'index']);
 });
 

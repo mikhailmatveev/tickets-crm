@@ -33,19 +33,34 @@ class Ticket extends Model implements HasMedia
     }
 
     /**
+     * Добавляет текст ответа менеджера в ticket_replies
+     * @param string $text Текст ответа
+     * @param int $userId ID пользователя
+     * @return void
+     */
+    public function addReply(string $text, int $userId): void
+    {
+        $this->replies()->create([
+            'text' => $text,
+            'user_id' => $userId,
+        ]);
+    }
+
+    /**
      * Обновляет статус тикету и если тикету присваивается статус "Выполнено",
      * то обновляется и manager_replied_at
-     * @param Status $status
+     * @param Status $status Статус тикета
      * @return void
      */
     public function changeStatus(Status $status): void
     {
         $this->status = $status;
+
         // Если статус сменился на "выполнено" - обновляем время
         if ($this->isDone() && $this->manager_replied_at === null) {
             $this->manager_replied_at = now();
-            return;
         }
+
         // Если статус изменился с "выполнено" на какой-то другой, то сбрасываем время
         if (!$this->isDone()) {
             $this->manager_replied_at = null;
