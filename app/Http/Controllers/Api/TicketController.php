@@ -105,7 +105,41 @@ class TicketController extends Controller
                 response: 201,
                 description: 'Тикет успешно создан',
                 content: new OA\JsonContent(
-                    ref: '#/components/schemas/Ticket'
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'customer_id', type: 'integer', example: 1),
+                        new OA\Property(property: 'subject', type: 'string', example: 'Проблема с заказом'),
+                        new OA\Property(property: 'text', type: 'string', example: 'Описание проблемы'),
+                        new OA\Property(property: 'status', type: 'string', example: 'new'),
+                        new OA\Property(property: 'manager_replied_at', type: 'string', format: 'date-time', nullable: true),
+                        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+                        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+
+                        new OA\Property(
+                            property: 'customer',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'Иван Иванов'),
+                                new OA\Property(property: 'email', type: 'string', example: 'test@example.com'),
+                                new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
+                            ],
+                            type: 'object'
+                        ),
+
+                        new OA\Property(
+                            property: 'replies',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 16),
+                                    new OA\Property(property: 'ticket_id', type: 'integer', example: 7),
+                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'text', type: 'string', example: 'Починили')
+                                ],
+                                type: 'object'
+                            )
+                        ),
+                    ]
                 )
             ),
 
