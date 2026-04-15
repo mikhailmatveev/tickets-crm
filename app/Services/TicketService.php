@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Ticket\Status;
 use App\Models\Customer;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,31 @@ class TicketService
                 'text' => $data['text'] ?? null,
                 'status' => 'new',
             ]);
+        });
+    }
+
+    /**
+     * Сервисный метод обновления статуса и ответа менеджера с использованием транзакции для TicketController::update()
+     * @param int $id ID тикета
+     * @param array $data Данные тикета (статус и ответ менеджера)
+     * @return Ticket Модель тикета
+     * @throws Throwable
+     */
+    public function update(int $id, array $data): Ticket
+    {
+        return DB::transaction(function () use ($id, $data) {
+
+            $ticket = Ticket::findOrFail($id);
+
+            $status = Status::from($data['status']);
+            $ticket->changeStatus($status);
+            $ticket->save();
+
+            if ($status === Status::DONE) {
+                $ticket->addReply($data['reply_text'], auth()->id());
+            }
+
+            return $ticket->load(['customer', 'replies']);
         });
     }
 }

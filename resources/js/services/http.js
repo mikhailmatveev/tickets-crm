@@ -47,6 +47,12 @@ class Http {
   async logout () {
     return await this.client.post('/auth/logout')
   }
+
+  async updateTicket (id, requestData) {
+    return await this.client.put(`/api/ticket/${id}`, {
+      ...requestData
+    })
+  }
 }
 
 export default new Http({
