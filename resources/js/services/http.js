@@ -5,6 +5,10 @@ class Http {
     this.client = axios.create(config)
   }
 
+  async deleteUser (id) {
+    return await this.client.delete(`/api/user/${id}`)
+  }
+
   async getCookie () {
     return await this.client.get('/sanctum/csrf-cookie')
   }

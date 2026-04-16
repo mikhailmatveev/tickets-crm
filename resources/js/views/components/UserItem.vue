@@ -35,6 +35,7 @@
                 name="role"
                 :value="item.name"
                 :checked="user.role?.id === item.id"
+                :disabled="fetchingUpdateRole"
                 @change="selectRole(item)"
               >
               {{ item.name }}
@@ -42,7 +43,11 @@
           </li>
         </ul>
       </details>
-      <button type="submit">
+      <button
+        type="button"
+        :disabled="fetchingDelete"
+        @click="deleteUser(user.id)"
+      >
         Удалить
       </button>
     </fieldset>
@@ -70,7 +75,9 @@ export default {
   },
   data () {
     return {
-      displayRole: ''
+      displayRole: '',
+      fetchingDelete: false,
+      fetchingUpdateRole: false
     }
   },
   computed: {
@@ -83,22 +90,42 @@ export default {
     this.displayRole = this.user.role.name || ''
   },
   methods: {
-    selectRole (role) {
+    async selectRole (role) {
       // Обновляем роль через апи-запрос
-      this.updateRole (role.id)
-      this.setDisplayRole(role.name)
+      const response = await this.updateRole (role.id)
+      if (response) {
+        this.setDisplayRole (role.name)
+      }
     },
     setDisplayRole (roleName) {
       this.displayRole = roleName
     },
+    async deleteUser (id) {
+      this.fetchingDelete = true
+      try {
+        await http.deleteUser(id)
+        // Отправляем событие в родительский компонент,
+        // чтобы удалить запись без дополнительных запросов
+        this.$emit('user-deleted', id)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.fetchingDelete = false
+      }
+    },
     async updateRole (roleId) {
+      this.fetchingUpdateRole = true
       try {
         const response = await http.updateUserRole(this.user.id,
           { role_id: roleId }
         )
         console.log(response.data)
+        return response
       } catch (e) {
         console.error(e)
+        return null
+      } finally {
+        this.fetchingUpdateRole = false
       }
     }
   }

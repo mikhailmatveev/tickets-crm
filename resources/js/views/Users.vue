@@ -4,6 +4,7 @@
     v-for="(item) in users"
     :key="item.id"
     :user="item"
+    @user-deleted="onUserDeleted"
   />
 </template>
 
@@ -33,6 +34,9 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+    onUserDeleted (id) {
+      this.users = this.users.filter(user => user.id !== id)
     }
   }
 }
