@@ -142,7 +142,7 @@ export default {
 
 <style scoped lang="scss">
 textarea {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .button-wrapper {

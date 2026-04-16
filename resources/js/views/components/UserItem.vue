@@ -1,51 +1,52 @@
 <template>
-  <div class="flex-wrapper">
-    <form>
-      <fieldset class="grid">
-        <div role="group">
-          <input
-            type="text"
-            :value="user.name"
+  <form>
+    <fieldset class="grid">
+      <div role="group">
+        <input
+          type="text"
+          :value="user.name"
+          readonly
+        >
+      </div>
+      <div role="group">
+        <input
+          type="email"
+          :value="user.email"
+          readonly
+        >
+      </div>
+      <div role="group">
+        <input
+          type="password"
+          :value="user.email"
+          readonly
+        >
+      </div>
+      <details class="dropdown">
+        <summary>{{ displayRole }}</summary>
+        <ul>
+          <li
+            v-for="(item, index) in roles"
+            :key="index"
           >
-        </div>
-        <div role="group">
-          <input
-            type="email"
-            :value="user.email"
-          >
-        </div>
-        <div role="group">
-          <input
-            type="password"
-            :value="user.email"
-          >
-        </div>
-        <details class="dropdown">
-          <summary>{{ displayRole }}</summary>
-          <ul>
-            <li
-              v-for="(item, index) in roles"
-              :key="index"
-            >
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  :value="item"
-                  :checked="user.role === item"
-                  @change="selectRole(item)"
-                >
-                {{ item }}
-              </label>
-            </li>
-          </ul>
-        </details>
-        <button type="submit">
-          Удалить
-        </button>
-      </fieldset>
-    </form>
-  </div>
+            <label>
+              <input
+                type="radio"
+                name="role"
+                :value="item"
+                :checked="user.role === item"
+                @change="selectRole(item)"
+              >
+              {{ item }}
+            </label>
+          </li>
+        </ul>
+      </details>
+      <button type="submit">
+        Удалить
+      </button>
+    </fieldset>
+  </form>
 </template>
 
 <script>
@@ -75,7 +76,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.roles)
     this.displayRole = this.user.role || ''
   },
   methods: {
