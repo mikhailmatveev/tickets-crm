@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enums\User\Permission;
+use App\Enums\User\Role;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
         // Gate для Telescope
         Gate::define('viewTelescope', function (User $user) {
-            return $user->can(Permission::VIEW_TELESCOPE);
+            return $user->hasRole(Role::ADMIN);
         });
     }
 }
