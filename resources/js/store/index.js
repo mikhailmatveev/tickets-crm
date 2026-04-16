@@ -1,9 +1,11 @@
 import { createStore } from 'vuex'
 import user from './modules/user'
+import roles from './modules/roles'
 
 const store = createStore({
   modules: {
-    user
+    user,
+    roles
   }
 })
 

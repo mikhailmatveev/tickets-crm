@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\User\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RolesResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
+use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
@@ -18,8 +19,8 @@ class RolesController extends Controller
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]
-    public function index(): RolesResource
+    public function index(): AnonymousResourceCollection
     {
-        return new RolesResource(Role::collection());
+        return RolesResource::collection(Role::all());
     }
 }

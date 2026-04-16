@@ -22,6 +22,8 @@ export default {
         commit('setUser', response.data)
       } catch {
         commit('setUser', null)
+      } finally {
+        commit('setFetching', false)
       }
     }
   },
