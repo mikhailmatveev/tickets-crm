@@ -1,13 +1,11 @@
 <template>
   <h1>Пользователи</h1>
-  <article>
-    <user-item
-      v-for="(item) in users"
-      :key="item.id"
-      :roles="roles"
-      :user="item"
-    />
-  </article>
+  <user-item
+    v-for="(item) in users"
+    :key="item.id"
+    :roles="roles"
+    :user="item"
+  />
 </template>
 
 <script>
@@ -52,7 +50,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-article {
-  margin-top: 50px;
-}
+
 </style>
