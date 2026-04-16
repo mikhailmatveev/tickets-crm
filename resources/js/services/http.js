@@ -5,6 +5,10 @@ class Http {
     this.client = axios.create(config)
   }
 
+  async deleteUser (id) {
+    return await this.client.delete(`/api/user/${id}`)
+  }
+
   async getCookie () {
     return await this.client.get('/sanctum/csrf-cookie')
   }
@@ -31,6 +35,12 @@ class Http {
 
   async getUser () {
     return await this.client.get('/api/user')
+  }
+
+  async updateUserRole (id, requestData) {
+    return await this.client.put(`/api/user/${id}/role`, {
+      ...requestData
+    })
   }
 
   async getUsers () {

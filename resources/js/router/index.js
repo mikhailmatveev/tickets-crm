@@ -84,6 +84,15 @@ router.beforeEach(async (to) => {
   const isAuthenticated = store.getters['user/isAuthenticated']
   const userRole = store.getters['user/getUserRole']
 
+  // Грузим список ролей, только если пользователь авторизован
+  // и стор ещё пустой
+  if (isAuthenticated) {
+    const roles = store.getters['roles/getRoles']
+    if (!roles.length) {
+      await store.dispatch('roles/fetchRoles')
+    }
+  }
+
   if (to.meta.requiresAuth && !isAuthenticated) {
     return {
       name: 'Login',
@@ -96,7 +105,7 @@ router.beforeEach(async (to) => {
   }
 
   // Проверка роли для доступа к страницам
-  if (to.meta.roles && !to.meta.roles.includes(userRole)) {
+  if (to.meta.roles && !to.meta.roles.includes(userRole.name)) {
     return { name: 'NotFound' }
   }
 })

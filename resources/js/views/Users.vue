@@ -3,8 +3,8 @@
   <user-item
     v-for="(item) in users"
     :key="item.id"
-    :roles="roles"
     :user="item"
+    @user-deleted="onUserDeleted"
   />
 </template>
 
@@ -20,23 +20,13 @@ export default {
   },
   data () {
     return {
-      roles: [],
       users: []
     }
   },
   mounted () {
-    this.getRoles()
     this.getUsers()
   },
   methods: {
-    async getRoles () {
-      try {
-        const response = await http.getRoles()
-        this.roles = response.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
     async getUsers () {
       try {
         const response = await http.getUsers()
@@ -44,6 +34,9 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    },
+    onUserDeleted (id) {
+      this.users = this.users.filter(user => user.id !== id)
     }
   }
 }
