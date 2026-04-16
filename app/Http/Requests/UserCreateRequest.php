@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Enums\User\Role;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UserCreateRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()?->hasRole(Role::ADMIN) ?? false;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique(
+                    'users',
+                    'email'
+                )
+                    ->whereNull('deleted_at')
+            ],
+            'password' => 'required|string|min:6',
+            'role' => [
+                'required',
+                'string',
+                Rule::in(Role::collection())
+            ]
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => "Поле 'Имя' обязательно для заполнения",
+            'name.string' => "Поле 'Имя' должно быть строкой",
+            'name.max' => "Поле 'Имя' не должно превышать 255 символов",
+
+            'email.required' => "Поле 'E-mail' обязательно для заполнения",
+            'email.string' => "Поле 'E-mail' должно быть строкой",
+            'email.email' => "Укажите корректный 'E-mail'",
+            'email.max' => "Поле 'E-mail' не должно превышать 255 символов",
+            'email.unique' => "Пользователь с таким E-mail уже существует",
+
+            'password.required' => "Поле 'Пароль' обязательно для заполнения",
+            'password.string' => "Поле 'Пароль' должно быть строкой",
+            'password.min' => "'Пароль' должен содержать не менее 6 символов",
+
+            'role.required' => "Поле 'Роль' обязательно для заполнения",
+            'role.string' => "Поле 'Роль' должно быть строкой",
+            'role.in' => "Выбрана недопустимая роль"
+        ];
+    }
+}

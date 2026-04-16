@@ -5,6 +5,12 @@ class Http {
     this.client = axios.create(config)
   }
 
+  async createUser (requestData) {
+    return await this.client.post('/api/user', {
+      ...requestData
+    })
+  }
+
   async deleteUser (id) {
     return await this.client.delete(`/api/user/${id}`)
   }
