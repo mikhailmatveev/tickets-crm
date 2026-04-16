@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn (Request $request) => new UserResource($request->user()));
+    Route::delete('/user/{id}', [UserController::class, 'destroy']);
     Route::put('/user/{id}/role', [UserUpdateRoleController::class, 'update']);
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/roles', [RolesController::class, 'index']);
