@@ -3,7 +3,6 @@
   <user-item
     v-for="(item) in users"
     :key="item.id"
-    :roles="roles"
     :user="item"
   />
 </template>
@@ -20,23 +19,13 @@ export default {
   },
   data () {
     return {
-      roles: [],
       users: []
     }
   },
   mounted () {
-    this.getRoles()
     this.getUsers()
   },
   methods: {
-    async getRoles () {
-      try {
-        const response = await http.getRoles()
-        this.roles = response.data
-      } catch (e) {
-        console.log(e)
-      }
-    },
     async getUsers () {
       try {
         const response = await http.getUsers()

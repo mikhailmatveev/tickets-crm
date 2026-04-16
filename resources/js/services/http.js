@@ -33,6 +33,12 @@ class Http {
     return await this.client.get('/api/user')
   }
 
+  async updateUserRole (id, requestData) {
+    return await this.client.put(`/api/user/${id}/role`, {
+      ...requestData
+    })
+  }
+
   async getUsers () {
     return await this.client.get('/api/users')
   }

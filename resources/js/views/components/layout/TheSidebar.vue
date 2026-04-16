@@ -26,7 +26,7 @@ export default {
     availableNavigation () {
       const role = this.$store.getters['user/getUserRole']
 
-      return navigation.filter(item => item.roles.includes(role))
+      return navigation.filter(item => item.roles.includes(role.name))
     }
   }
 }

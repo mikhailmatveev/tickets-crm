@@ -26,18 +26,18 @@
         <summary>{{ displayRole }}</summary>
         <ul>
           <li
-            v-for="(item, index) in roles"
-            :key="index"
+            v-for="item in roles"
+            :key="item.id"
           >
             <label>
               <input
                 type="radio"
                 name="role"
-                :value="item"
-                :checked="user.role === item"
+                :value="item.name"
+                :checked="user.role?.id === item.id"
                 @change="selectRole(item)"
               >
-              {{ item }}
+              {{ item.name }}
             </label>
           </li>
         </ul>
@@ -50,22 +50,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import http from '../../services/http'
+
 export default {
   name: 'UserItem',
   props: {
-    roles: {
-      type: Array,
-      default () {
-        return []
-      }
-    },
     user: {
       type: Object,
       default() {
         return {
+          id: 0,
           name: '',
           email: '',
-          role: ''
+          role: {}
         }
       }
     }
@@ -75,12 +73,33 @@ export default {
       displayRole: ''
     }
   },
+  computed: {
+    ...mapGetters('roles', ['getRoles']),
+    roles () {
+      return this.getRoles
+    }
+  },
   mounted () {
-    this.displayRole = this.user.role || ''
+    this.displayRole = this.user.role.name || ''
   },
   methods: {
     selectRole (role) {
-      this.displayRole = role
+      // Обновляем роль через апи-запрос
+      this.updateRole (role.id)
+      this.setDisplayRole(role.name)
+    },
+    setDisplayRole (roleName) {
+      this.displayRole = roleName
+    },
+    async updateRole (roleId) {
+      try {
+        const response = await http.updateUserRole(this.user.id,
+          { role_id: roleId }
+        )
+        console.log(response.data)
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 }
