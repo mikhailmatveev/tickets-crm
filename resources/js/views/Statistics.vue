@@ -69,11 +69,6 @@ export default {
 
 <style scoped lang="scss">
 .date-filers {
-  margin-top: 30px;
   max-width: 540px;
-}
-
-table {
-  margin-top: 30px;
 }
 </style>
