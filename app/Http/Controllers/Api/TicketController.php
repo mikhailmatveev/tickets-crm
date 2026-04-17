@@ -24,7 +24,13 @@ class TicketController extends Controller
         description: 'Возвращает список тикетов в связке с клиентом',
         tags: ['api'],
         responses: [
-            new OA\Response(response: 200, description: 'Список тикетов'),
+            new OA\Response(
+                response: 200,
+                description: 'Список тикетов',
+                content: new OA\JsonContent(
+                    items: new OA\Items(ref: '#/components/schemas/Ticket')
+                )
+            ),
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]
@@ -40,8 +46,21 @@ class TicketController extends Controller
         path: '/api/ticket/{id}',
         description: 'Возвращает подробные данные о тикете в связке с клиентами и ответами на этот тикет',
         tags: ['api'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'ID тикета',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer', example: 1)
+            )
+        ],
         responses: [
-            new OA\Response(response: 200, description: 'Данные по тикету'),
+            new OA\Response(
+                response: 200,
+                description: 'Данные по тикету',
+                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
+            ),
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]
@@ -60,41 +79,7 @@ class TicketController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['name', 'email', 'phone', 'subject'],
-                properties: [
-                    new OA\Property(
-                        property: 'name',
-                        type: 'string',
-                        maxLength: 255,
-                        example: 'Иван Иванов'
-                    ),
-                    new OA\Property(
-                        property: 'email',
-                        type: 'string',
-                        format: 'email',
-                        maxLength: 255,
-                        example: 'test@example.com'
-                    ),
-                    new OA\Property(
-                        property: 'phone',
-                        type: 'string',
-                        maxLength: 20,
-                        example: '+79991234567'
-                    ),
-                    new OA\Property(
-                        property: 'subject',
-                        type: 'string',
-                        maxLength: 255,
-                        example: 'Проблема с заказом'
-                    ),
-                    new OA\Property(
-                        property: 'text',
-                        type: 'string',
-                        maxLength: 2000,
-                        example: 'Описание проблемы',
-                        nullable: true
-                    ),
-                ]
+                items: new OA\Items(ref: '#/components/schemas/TicketStoreRequest')
             )
         ),
 
@@ -104,43 +89,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'Тикет успешно создан',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'customer_id', type: 'integer', example: 1),
-                        new OA\Property(property: 'subject', type: 'string', example: 'Проблема с заказом'),
-                        new OA\Property(property: 'text', type: 'string', example: 'Описание проблемы'),
-                        new OA\Property(property: 'status', type: 'string', example: 'new'),
-                        new OA\Property(property: 'manager_replied_at', type: 'string', format: 'date-time', nullable: true),
-                        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
-                        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
-
-                        new OA\Property(
-                            property: 'customer',
-                            properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'Иван Иванов'),
-                                new OA\Property(property: 'email', type: 'string', example: 'test@example.com'),
-                                new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
-                            ],
-                            type: 'object'
-                        ),
-
-                        new OA\Property(
-                            property: 'replies',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 16),
-                                    new OA\Property(property: 'ticket_id', type: 'integer', example: 7),
-                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'text', type: 'string', example: 'Починили')
-                                ],
-                                type: 'object'
-                            )
-                        ),
-                    ]
-                )
+                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
             ),
 
             new OA\Response(
@@ -225,7 +174,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 500,
                 description: 'Ошибка сервера'
-            ),
+            )
         ]
     )]
     public function create(TicketStoreRequest $request)
@@ -276,26 +225,7 @@ class TicketController extends Controller
         summary: 'Обновить тикет и добавить ответ',
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(
-                required: ['status'],
-                properties: [
-                    new OA\Property(
-                        property: 'status',
-                        description: 'Статус тикета',
-                        type: 'string',
-                        enum: ['new', 'working', 'done'],
-                        example: 'working'
-                    ),
-                    new OA\Property(
-                        property: 'reply_text',
-                        description: 'Текст ответа. Обязателен только при status = done. Запрещён для других статусов',
-                        type: 'string',
-                        maxLength: 2000,
-                        example: 'Ответ менеджера клиенту',
-                        nullable: true
-                    ),
-                ]
-            )
+            content: new OA\JsonContent(ref: '#/components/schemas/TicketUpdateRequest')
         ),
 
         tags: ['api'],
@@ -314,41 +244,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Тикет успешно обновлён',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'customer_id', type: 'integer', example: 1),
-                        new OA\Property(property: 'subject', type: 'string', example: 'Проблема с заказом'),
-                        new OA\Property(property: 'text', type: 'string', example: 'Описание проблемы'),
-                        new OA\Property(property: 'status', type: 'string', example: 'working'),
-                        new OA\Property(property: 'manager_replied_at', type: 'string', format: 'date-time', nullable: true),
-                        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
-                        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
-
-                        new OA\Property(
-                            property: 'customer',
-                            properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
-                                new OA\Property(property: 'name', type: 'string', example: 'Иван Иванов'),
-                                new OA\Property(property: 'email', type: 'string', example: 'test@example.com'),
-                                new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
-                            ],
-                            type: 'object'
-                        ),
-
-                        new OA\Property(
-                            property: 'replies',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    new OA\Property(property: 'text', type: 'string', example: 'Ответ менеджера'),
-                                    new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
-                                ]
-                            )
-                        ),
-                    ]
-                )
+                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
             ),
 
             new OA\Response(

@@ -14,28 +14,9 @@ class AuthController extends Controller
         path: '/login',
         description: 'Логин с использованием email и пароля',
         requestBody: new OA\RequestBody(
+            description: 'Данные авторизации (email и пароль)',
             required: true,
-            content: new OA\JsonContent(
-                required: ['email', 'password'],
-                properties: [
-                    new OA\Property(
-                        property: 'email',
-                        description: 'E-mail',
-                        type: 'string',
-                        format: 'email',
-                        maxLength: 255,
-                        example: 'user@example.com'
-                    ),
-                    new OA\Property(
-                        property: 'password',
-                        description: 'Пароль',
-                        type: 'string',
-                        format: 'password',
-                        minLength: 6,
-                        example: '123456'
-                    )
-                ]
-            ),
+            content: new OA\JsonContent(ref: '#/components/schemas/LoginRequest')
         ),
         tags: ['web'],
         responses: [
@@ -74,7 +55,11 @@ class AuthController extends Controller
         description: 'Возвращает данные авторизованного пользователя',
         tags: ['api'],
         responses: [
-            new OA\Response(response: 200, description: 'Данные пользователя'),
+            new OA\Response(
+                response: 200,
+                description: 'Данные пользователя',
+                content: new OA\JsonContent(ref: '#/components/schemas/User')
+            ),
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]

@@ -16,18 +16,7 @@ class UserUpdateRoleController extends Controller
         summary: 'Обновить роль пользователя',
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(
-                required: ['role_id'],
-                properties: [
-                    new OA\Property(
-                        property: 'role_id',
-                        description: 'ID роли из таблицы roles',
-                        type: 'integer',
-                        minimum: 1,
-                        example: 2
-                    )
-                ]
-            )
+            content: new OA\JsonContent(ref: '#/components/schemas/UserUpdateRoleRequest')
         ),
 
         tags: ['api'],
@@ -50,32 +39,7 @@ class UserUpdateRoleController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Роль пользователя успешно обновлена',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'id',
-                            type: 'integer',
-                            example: 1
-                        ),
-                        new OA\Property(
-                            property: 'name',
-                            type: 'string',
-                            example: 'Иван Иванов'
-                        ),
-                        new OA\Property(
-                            property: 'email',
-                            type: 'string',
-                            format: 'email',
-                            example: 'ivan@example.com'
-                        ),
-                        new OA\Property(
-                            property: 'role',
-                            description: 'Текущая роль пользователя',
-                            type: 'string',
-                            example: 'manager'
-                        ),
-                    ]
-                )
+                content: new OA\JsonContent(ref: '#/components/schemas/User')
             ),
 
             new OA\Response(

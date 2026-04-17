@@ -19,7 +19,13 @@ class UserController extends Controller
         description: 'Возвращает список пользователей вместе ролями',
         tags: ['api'],
         responses: [
-            new OA\Response(response: 200, description: 'Список пользователей'),
+            new OA\Response(
+                response: 200,
+                description: 'Список пользователей',
+                content: new OA\JsonContent(
+                    items: new OA\Items(ref: '#/components/schemas/User')
+                )
+            ),
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]
@@ -39,61 +45,14 @@ class UserController extends Controller
         summary: 'Создать пользователя',
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(
-                required: ['name', 'email', 'password', 'role'],
-                properties: [
-                    new OA\Property(
-                        property: 'name',
-                        description: 'Имя пользователя',
-                        type: 'string',
-                        maxLength: 255,
-                        example: 'Иван Иванов'
-                    ),
-                    new OA\Property(
-                        property: 'email',
-                        description: 'Email пользователя (уникальный)',
-                        type: 'string',
-                        format: 'email',
-                        maxLength: 255,
-                        example: 'ivan@example.com'
-                    ),
-                    new OA\Property(
-                        property: 'password',
-                        description: 'Пароль пользователя',
-                        type: 'string',
-                        minLength: 6,
-                        example: 'secret123'
-                    ),
-                    new OA\Property(
-                        property: 'role',
-                        description: 'Роль пользователя',
-                        type: 'string',
-                        enum: ['admin', 'manager'],
-                        example: 'manager'
-                    )
-                ]
-            )
+            content: new OA\JsonContent(ref: '#/components/schemas/UserCreateRequest')
         ),
         tags: ['api'],
         responses: [
             new OA\Response(
                 response: 201,
                 description: 'Пользователь успешно создан',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'Иван Иванов'),
-                        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'ivan@example.com'),
-                        new OA\Property(
-                            property: 'role',
-                            properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 2),
-                                new OA\Property(property: 'name', type: 'string', example: 'manager')
-                            ],
-                            type: 'object'
-                        )
-                    ]
-                )
+                content: new OA\JsonContent(ref: '#/components/schemas/User')
             ),
             new OA\Response(response: 401, description: 'Неавторизован'),
             new OA\Response(response: 403, description: 'Доступ запрещён'),
@@ -186,7 +145,11 @@ class UserController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Пользователь удалён'),
+            new OA\Response(
+                response: 200,
+                description: 'Пользователь удалён',
+                content: new OA\JsonContent(ref: '#/components/schemas/User')
+            ),
             new OA\Response(response: 401, description: 'Неавторизован'),
             new OA\Response(response: 403, description: 'Доступ запрещён'),
             new OA\Response(response: 404, description: 'Пользователь не найден'),
