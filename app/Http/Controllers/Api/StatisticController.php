@@ -17,19 +17,13 @@ class StatisticController extends Controller
     #[OA\Get(
         path: '/api/tickets/statistics',
         description: 'Возвращает статистику по тикетам по периодам (день, неделя, месяц)',
-        tags: ['api'],
-        parameters: [
-            new OA\Parameter(
-                name: 'period',
-                description: 'Период',
-                in: 'query',
-                required: true,
-                schema: new OA\Schema(
-                    type: 'string',
-                    enum: Period::class
-                )
+        requestBody: new OA\RequestBody(
+            description: 'Период',
+            content: new OA\JsonContent(
+                ref: '#/components/schemas/Period'
             )
-        ],
+        ),
+        tags: ['api'],
         responses: [
             new OA\Response(response: 200, description: 'Данные статистики'),
             new OA\Response(response: 401, description: 'Неавторизован')
