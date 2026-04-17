@@ -3,7 +3,13 @@
 namespace App\Enums\User;
 
 use Illuminate\Support\Collection;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'Role',
+    type: 'string',
+    enum: ['admin', 'manager']
+)]
 enum Role: string
 {
     case ADMIN = 'admin';

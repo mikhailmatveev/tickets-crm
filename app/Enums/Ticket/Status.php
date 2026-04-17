@@ -3,7 +3,13 @@
 namespace App\Enums\Ticket;
 
 use Illuminate\Support\Collection;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'Status',
+    type: 'string',
+    enum: ['done', 'new', 'working']
+)]
 enum Status: string
 {
     case DONE = 'done';
