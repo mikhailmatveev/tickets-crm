@@ -23,8 +23,12 @@ class Http {
     return await this.client.get('/api/roles')
   }
 
-  async getTickets () {
-    return await this.client.get('/api/tickets')
+  async getTickets (filters) {
+    return await this.client.get('/api/tickets', {
+      params: {
+        filters
+      }
+    })
   }
 
   async getStatistics (period) {
