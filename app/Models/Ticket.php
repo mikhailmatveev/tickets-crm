@@ -122,6 +122,54 @@ class Ticket extends Model implements HasMedia
     }
 
     /**
+     * Фильтр по полю email, которое есть у модели Customer
+     * @param Builder $query Билдер
+     * @param string $email E-mail
+     * @return Builder Билдер
+     */
+    public function scopeByEmail(Builder $query, string $email): Builder
+    {
+        return $query->whereHas('customer', function (Builder $query) use ($email) {
+            $query->whereLike('email', "%{$email}%");
+        });
+    }
+
+    /**
+     * Фильтр по полю phone, которое есть у модели Customer
+     * @param Builder $query Билдер
+     * @param string $phone Телефон
+     * @return Builder Билдер
+     */
+    public function scopeByPhone(Builder $query, string $phone): Builder
+    {
+        return $query->whereHas('customer', function (Builder $query) use ($phone) {
+            $query->whereLike('phone', "%{$phone}%");
+        });
+    }
+
+    /**
+     * Фильтр по дате ответа менеджера
+     * @param Builder $query Билдер
+     * @param string $date Дата
+     * @return Builder Билдер
+     */
+    public function scopeByDate(Builder $query, string $date): Builder
+    {
+        return $query->whereDate('manager_replied_at', '<=', $date);
+    }
+
+    /**
+     * Фильтр по статусу тикета
+     * @param Builder $query Билдер
+     * @param string $status Статус
+     * @return Builder Билдер
+     */
+    public function scopeByStatus(Builder $query, string $status): Builder
+    {
+        return $query->where('status', $status);
+    }
+
+    /**
      * Фильтр для статистики тикетов за текущую неделю
      * @param Builder $query
      * @return Builder

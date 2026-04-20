@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\TicketStoreRequest;
 use App\Http\Requests\TicketUpdateRequest;
 use App\Http\Resources\TicketResource;
@@ -10,6 +11,7 @@ use App\Http\Resources\TicketCreateResource;
 use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 use RateLimiter;
 
@@ -22,6 +24,12 @@ class TicketController extends Controller
     #[OA\Get(
         path: '/api/tickets',
         description: 'Возвращает список тикетов в связке с клиентом',
+        requestBody: new OA\RequestBody(
+            description: 'Фильтр',
+            content: new OA\JsonContent(
+                ref: '#/components/schemas/TicketFilterRequest'
+            )
+        ),
         tags: ['api'],
         responses: [
             new OA\Response(
@@ -34,10 +42,15 @@ class TicketController extends Controller
             new OA\Response(response: 401, description: 'Неавторизован')
         ]
     )]
-    public function index(): TicketResource
+    public function index(TicketFilterRequest $request): AnonymousResourceCollection
     {
-        return new TicketResource(
-            Ticket::with('customer')
+        return TicketResource::collection(
+            Ticket::query()
+                ->with('customer')
+                ->when($request->filled('email'), fn($q) => $q->byEmail($request->email))
+                ->when($request->filled('phone'), fn($q) => $q->byPhone($request->phone))
+                ->when($request->filled('date'), fn($q) => $q->byDate($request->date))
+                ->when($request->filled('status'), fn($q) => $q->byStatus($request->status))
                 ->get()
         );
     }
@@ -61,7 +74,8 @@ class TicketController extends Controller
                 description: 'Данные по тикету',
                 content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
             ),
-            new OA\Response(response: 401, description: 'Неавторизован')
+            new OA\Response(response: 401, description: 'Неавторизован'),
+            new OA\Response(response: 422, description: 'Ошибка валидации')
         ]
     )]
     public function show(int $id): TicketResource
