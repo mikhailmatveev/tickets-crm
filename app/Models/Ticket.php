@@ -129,7 +129,13 @@ class Ticket extends Model implements HasMedia
     public function scopeRepliedThisDay(Builder $query): Builder
     {
         $today = Carbon::today();
-        return $query->whereDate('manager_replied_at', $today);
+        $dayStart = $today->copy()->startOfDay();
+        $dayEnd = $today->copy()->endOfDay();
+
+        return $query->whereBetween('manager_replied_at', [
+            $dayStart,
+            $dayEnd
+        ]);
     }
 
     /**
@@ -140,9 +146,12 @@ class Ticket extends Model implements HasMedia
     public function scopeRepliedThisWeek(Builder $query): Builder
     {
         $today = Carbon::today();
+        $weekStart = $today->copy()->startOfWeek();
+        $weekEnd = $today->copy()->endOfWeek();
+
         return $query->whereBetween('manager_replied_at', [
-            $today->startOfWeek(),
-            $today->endOfWeek()
+            $weekStart,
+            $weekEnd
         ]);
     }
 
@@ -155,9 +164,12 @@ class Ticket extends Model implements HasMedia
     public function scopeRepliedThisMonth(Builder $query): Builder
     {
         $today = Carbon::today();
-        return $query
-            ->whereYear('manager_replied_at', $today->year)
-            ->whereMonth('manager_replied_at', $today->month)
-        ;
+        $monthStart = $today->copy()->startOfMonth();
+        $monthEnd = $today->copy()->endOfMonth();
+
+        return $query->whereBetween('manager_replied_at', [
+            $monthStart,
+            $monthEnd
+        ]);
     }
 }
