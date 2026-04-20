@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use OpenApi\Attributes as OA;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 #[OA\Schema(
@@ -23,7 +24,8 @@ use Spatie\Permission\Traits\HasRoles;
         new OA\Property(property: 'remember_token', type: 'string', maxLength: 100, nullable: true),
         new OA\Property(property: 'created_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
         new OA\Property(property: 'updated_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
-        new OA\Property(property: 'deleted_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true)
+        new OA\Property(property: 'deleted_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
+        new OA\Property(property: 'role', type: Role::class)
     ],
     type: 'object'
 )]
