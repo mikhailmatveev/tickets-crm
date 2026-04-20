@@ -1,6 +1,9 @@
 <template>
   <h1>Тикеты</h1>
-  <ticket-filter @submit-filters="applyFilters" />
+  <ticket-filter
+    @reset-filters="getTickets"
+    @submit-filters="getTickets"
+  />
   <table>
     <thead>
       <tr>
@@ -40,6 +43,7 @@
 
 <script>
 import { formatDate } from '../mixins/helper'
+import { mapGetters } from 'vuex'
 import http from '../services/http'
 import TicketDetails from './TicketDetails.vue'
 import TicketFilter from './components/TicketFilter.vue'
@@ -56,6 +60,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      getFilters: 'filters/getFilters'
+    }),
+    filters: {
+      get () {
+        return this.getFilters
+      }
+    },
     TicketDetails () {
       return TicketDetails
     }
@@ -65,19 +77,15 @@ export default {
   },
   methods: {
     formatDate,
-    async applyFilters (filters) {
-      const cleanedFilters = {}
-      for (const [key, value] of Object.entries(filters)) {
-        if (value !== '') {
-          cleanedFilters[key] = value
-        }
-      }
-      const response = await http.getTickets(cleanedFilters)
-      this.tickets = response.data
-    },
     async getTickets () {
       try {
-        const response = await http.getTickets()
+        const cleanedFilters = {}
+        for (const [key, value] of Object.entries(this.filters)) {
+          if (value !== '') {
+            cleanedFilters[key] = value
+          }
+        }
+        const response = await http.getTickets(cleanedFilters)
         this.tickets = response.data
       } catch (e) {
         console.log(e)
