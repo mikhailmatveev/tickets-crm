@@ -52,9 +52,13 @@
           </ul>
         </details>
         <button
-          type="submit"
-          @click=""
+          type="button"
+          class="secondary"
+          @click="resetFilters"
         >
+          Сбросить
+        </button>
+        <button type="submit">
           Применить
         </button>
       </fieldset>
@@ -90,7 +94,16 @@ export default {
       setFilters: 'filters/setFilters'
     }),
     submitFilters () {
-      this.$emit('submit-filters', { ...this.filters })
+      this.$emit('submit-filters')
+    },
+    resetFilters () {
+      this.setFilters({
+        email: '',
+        phone: '',
+        date: '',
+        status: ''
+      })
+      this.$emit('reset-filters')
     },
     statusToText
   }
