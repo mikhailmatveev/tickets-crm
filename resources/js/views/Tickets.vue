@@ -1,5 +1,6 @@
 <template>
   <h1>Тикеты</h1>
+  <ticket-filter @submit-filters="applyFilters" />
   <table>
     <thead>
       <tr>
@@ -41,10 +42,14 @@
 import { formatDate } from '../mixins/helper'
 import http from '../services/http'
 import TicketDetails from './TicketDetails.vue'
+import TicketFilter from './components/TicketFilter.vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Tickets',
+  components: {
+    TicketFilter
+  },
   data () {
     return {
       tickets: []
@@ -60,6 +65,16 @@ export default {
   },
   methods: {
     formatDate,
+    async applyFilters (filters) {
+      const cleanedFilters = {}
+      for (const [key, value] of Object.entries(filters)) {
+        if (value !== '') {
+          cleanedFilters[key] = value
+        }
+      }
+      const response = await http.getTickets(cleanedFilters)
+      this.tickets = response.data
+    },
     async getTickets () {
       try {
         const response = await http.getTickets()
