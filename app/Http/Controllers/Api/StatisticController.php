@@ -31,8 +31,8 @@ class StatisticController extends Controller
     )]
     public function index(StatisticRequest $request): StatisticResource
     {
-        // Если period не передан, по умолчанию 'day'
-        $period = $request->input('period', 'day');
+        // Если period не передан, по умолчанию day
+        $period = Period::tryFrom($request->input('period', Period::DAY->value)) ?? Period::DAY;
         // Завершенные тикеты
         $ticketsQuery = Ticket::where('status', Status::DONE);
         // Применяем скоуп по периоду
