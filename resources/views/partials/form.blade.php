@@ -39,6 +39,11 @@
                 required
             />
         </label>
+        <input
+            type="file"
+            name="attachments[]"
+            multiple
+        >
         <label>
             Описание проблемы
             <textarea name="text" rows="2"></textarea>

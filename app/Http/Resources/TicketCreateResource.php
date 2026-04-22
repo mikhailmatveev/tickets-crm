@@ -19,7 +19,8 @@ class TicketCreateResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'customer' => new CustomerResource($this->whenLoaded('customer')),
-            'replies' => TicketReplyResource::collection($this->whenLoaded('replies'))
+            'replies' => TicketReplyResource::collection($this->whenLoaded('replies')),
+            'attachments' => MediaResource::collection($this->getMedia('attachments'))
         ];
     }
 }

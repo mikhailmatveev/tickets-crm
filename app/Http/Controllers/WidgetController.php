@@ -12,7 +12,7 @@ class WidgetController extends Controller
         $ticketId = $request->validated('ticket_id');
         $ticket = null;
         if ($ticketId) {
-            $ticket = Ticket::with('customer', 'replies')->findOrFail($ticketId);
+            $ticket = Ticket::with(['customer', 'replies', 'media'])->findOrFail($ticketId);
         }
         return view('widget', ['ticket' => $ticket]);
     }

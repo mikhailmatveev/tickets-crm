@@ -32,7 +32,9 @@ ADMIN_PASSWORD=password
 ```
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
 php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="media-library-config"
 php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+php artisan storage:link
 ```
 ## Выполнение миграций
 
