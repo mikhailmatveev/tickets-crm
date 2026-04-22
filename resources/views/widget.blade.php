@@ -13,7 +13,9 @@
             @if ($errors->any())
                 @include('partials.error')
             @elseif($ticket)
-                @include('partials.ticket')
+                @include('partials.ticket', [
+                    'attachments' => $ticket->getMedia('attachments')
+                ])
             @else
                 @include('partials.form')
             @endif

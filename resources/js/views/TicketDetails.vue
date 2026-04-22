@@ -18,6 +18,10 @@
       <cite>{{ details.customer.name }}</cite>
     </footer>
   </blockquote>
+  <attachments
+    v-if="details.attachments && details.attachments.length > 0"
+    :attachments="details.attachments"
+  />
   <h3 v-if="details.replies && details.replies.length">
     Ответы менеджера
   </h3>
@@ -54,12 +58,14 @@
 <script>
 import { formatDate } from '../mixins/helper'
 import http from '../services/http'
+import Attachments from './components/ui/Attachments.vue'
 import Modal from './components/Modal.vue'
 import Reply from './components/ui/Reply.vue'
 
 export default {
   name: 'TicketDetails',
   components: {
+    Attachments,
     Modal,
     Reply
   },
