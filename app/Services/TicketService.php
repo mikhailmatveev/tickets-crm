@@ -18,7 +18,7 @@ class TicketService
      */
     public function create(array $data): Ticket
     {
-        return DB::transaction(function () use ($data) {
+        $ticket = DB::transaction(function () use ($data) {
             $customer = Customer::firstOrCreate(
                 [
                     'email' => $data['email'],
@@ -36,6 +36,13 @@ class TicketService
                 'status' => 'new',
             ]);
         });
+
+        // Прикрепляем файлы к тикету, если они есть
+        foreach (($data['attachments'] ?? []) as $file) {
+            $ticket->addMedia($file)->toMediaCollection('attachments');
+        }
+
+        return $ticket;
     }
 
     /**
@@ -59,7 +66,7 @@ class TicketService
                 $ticket->addReply($data['reply_text'], auth()->id());
             }
 
-            return $ticket->load(['customer', 'replies']);
+            return $ticket->load(['customer', 'replies', 'media']);
         });
     }
 }

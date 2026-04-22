@@ -81,7 +81,7 @@ class TicketController extends Controller
     public function show(int $id): TicketResource
     {
         return new TicketResource(
-            Ticket::with('customer', 'replies')
+            Ticket::with(['customer', 'replies', 'media'])
                 ->findOrFail($id)
         );
     }

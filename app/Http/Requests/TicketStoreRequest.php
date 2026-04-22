@@ -58,7 +58,9 @@ class TicketStoreRequest extends FormRequest
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
             'subject' => 'required|string|max:255',
-            'text' => 'nullable|string|max:2000'
+            'text' => 'nullable|string|max:2000',
+            'attachments' => 'nullable|array|max:5',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240'
         ];
     }
 

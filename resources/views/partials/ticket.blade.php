@@ -19,6 +19,9 @@
     </footer>
 </blockquote>
 @endif
+@if($attachments && count($attachments) > 0)
+    @include('partials.attachments')
+@endif
 @if($ticket->replies && count($ticket->replies) > 0)
 <h3>Ответы менеджера</h3>
 @foreach($ticket->replies as $reply)
