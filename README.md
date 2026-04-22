@@ -5,12 +5,14 @@
 ## Развёртывание
 1. `git clone git@github.com:mikhailmatveev/tickets-crm.git`
 2. `cp .env.example .env`
-3. `Настроить .env`
-4. `composer install`
-5. `php artisan key:generate`
-6. `php artisan key:generate --env=testing`
-7. `php artisan telescope:install`
-8. `npm install`
+3. `cp .env.testing.example .env.testing`
+4. `Настроить .env`
+5. `Настроить .env.testing`
+6. `composer install`
+7. `php artisan key:generate`
+8. `php artisan key:generate --env=testing`
+9. `php artisan storage:link`
+10. `npm install`
 
 ## Админ
 
@@ -24,18 +26,6 @@ ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD=password
 ```
 
-## Публикация сторонних библиотек Laravel
-
-Может потребоваться дополнительно публикация через `artisan vendor:publish` сторонних библиотек,
-чтобы создались необходимые для работы конфиги
-
-```
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
-php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="media-library-config"
-php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
-php artisan storage:link
-```
 ## Выполнение миграций
 
 `php artisan migrate`
