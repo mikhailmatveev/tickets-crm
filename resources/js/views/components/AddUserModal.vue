@@ -1,5 +1,5 @@
 <template>
-  <dialog :open="isModalOpen">
+  <dialog :open="isOpen">
     <article>
       <h2>
         Добавить пользователя
@@ -16,10 +16,10 @@
               aria-label="Имя"
               autocomplete="name"
               required
-              :aria-invalid="error !== null ? true : null"
+              :aria-invalid="validationErrors.name !== undefined ? true : undefined"
             >
-            <small v-if="error">
-              {{ error }}
+            <small v-if="validationErrors.name">
+              {{ validationErrors.name }}
             </small>
           </label>
           <label>
@@ -32,10 +32,10 @@
               aria-label="E-mail"
               autocomplete="email"
               required
-              :aria-invalid="error !== null ? true : null"
+              :aria-invalid="validationErrors.email !== undefined ? true : undefined"
             >
-            <small v-if="error">
-              {{ error }}
+            <small v-if="validationErrors.email">
+              {{ validationErrors.email }}
             </small>
           </label>
           <label>
@@ -47,10 +47,10 @@
               placeholder="Пароль"
               aria-label="Пароль"
               required
-              :aria-invalid="error !== null ? true : null"
+              :aria-invalid="validationErrors.password !== undefined ? true : undefined"
             >
-            <small v-if="error">
-              {{ error }}
+            <small v-if="validationErrors.password">
+              {{ validationErrors.password }}
             </small>
           </label>
           <label>
@@ -75,35 +75,51 @@
       <footer>
         <button
           role="button"
-          @click="handleSubmit"
+          @click="onAddModalSubmit"
         >
           OK
         </button>
         <button
           role="button"
           class="secondary"
-          @click="handleCancel"
+          @click="onAddModalCancel"
         >
           Отмена
         </button>
       </footer>
     </article>
   </dialog>
+  <modal
+    header-text="Ошибка при создании пользователя"
+    :is-open="error !== null"
+    :body-text="error"
+    @submit="onModalSubmit"
+  />
 </template>
 
 <script>
 import http from './../../services/http'
 import roleConstants from './../../constants/roles'
+import { getMessage } from '../../helpers/apiErrors'
+import { getMessages } from '../../helpers/validationErrors'
 import { toRoleMap } from './../../helpers/roleMapper'
+import Modal from './Modal.vue'
 
 export default {
   name: 'AddUserModal',
+  components: {
+    Modal
+  },
   props: {
-    isModalOpen: {
+    isOpen: {
       type: Boolean,
       default: false
     }
   },
+  emits: [
+    'add-user-submit',
+    'add-user-cancel'
+  ],
   data () {
     return {
       error: null,
@@ -113,7 +129,8 @@ export default {
         email: '',
         password: '',
         role: roleConstants.MANAGER
-      }
+      },
+      validationErrors: {}
     }
   },
   computed: {
@@ -122,19 +139,36 @@ export default {
     }
   },
   methods: {
-    async handleSubmit () {
+    async onAddModalSubmit () {
       this.fetchingCreateUser = true
       try {
+        // Сброс ошибок, если были ранее
+        this.resetErrors()
         const response = await http.createUser(this.user)
         this.$emit('add-user-submit', response.data)
       } catch (e) {
-        console.error(e)
+        if (e.response && e.response.status) {
+          if (e.response.status === 422) {
+            this.validationErrors = getMessages(e)
+          } else {
+            this.error = getMessage(e)
+          }
+        } else {
+          this.error = 'Ошибка выполнения запроса'
+        }
       } finally {
         this.fetchingCreateUser = false
       }
     },
-    handleCancel () {
+    onAddModalCancel () {
       this.$emit('add-user-cancel')
+    },
+    onModalSubmit () {
+      this.resetErrors()
+    },
+    resetErrors () {
+      this.error = null
+      this.validationErrors = {}
     }
   }
 }
