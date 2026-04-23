@@ -12,10 +12,10 @@
             aria-label="Ваш E-mail"
             autocomplete="email"
             required
-            :aria-invalid="error !== null ? true : null"
+            :aria-invalid="validationErrors.email !== undefined ? true : undefined"
           >
-          <small v-if="error">
-            {{ error }}
+          <small v-if="validationErrors.email">
+            {{ validationErrors.email }}
           </small>
         </label>
         <label>
@@ -27,10 +27,10 @@
             placeholder="Введите пароль"
             aria-label="Введите пароль"
             required
-            :aria-invalid="error !== null ? true : null"
+            :aria-invalid="validationErrors.password !== undefined ? true : undefined"
           >
-          <small v-if="error">
-            {{ error }}
+          <small v-if="validationErrors.password">
+            {{ validationErrors.password }}
           </small>
         </label>
       </fieldset>
@@ -39,24 +39,39 @@
       </button>
     </form>
   </div>
+  <modal
+    header-text="Ошибка входа"
+    :is-open="error !== null"
+    :body-text="error"
+    @submit="onModalSubmit"
+  />
 </template>
 
 <script>
+import { getMessage } from '../helpers/apiErrors'
+import { getMessages } from '../helpers/validationErrors'
 import http from '../services/http'
+import Modal from './components/Modal.vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Login',
+  components: {
+    Modal
+  },
   data () {
     return {
       email: '',
       password: '',
-      error: null
+      error: null,
+      validationErrors: {}
     }
   },
   methods: {
     async login () {
       try {
+        // Сброс ошибок, если были ранее
+        this.resetErrors()
         // Валидация сессии
         await http.getCookie()
         // Авторизация
@@ -68,12 +83,23 @@ export default {
         // Редирект
         await this.$router.push(redirect)
       } catch (e) {
-        if (e.response?.data?.message) {
-          this.error = e.response.data.message
+        if (e.response && e.response.status) {
+          if (e.response.status === 422) {
+            this.validationErrors = getMessages(e)
+          } else {
+            this.error = getMessage(e)
+          }
         } else {
           this.error = 'Ошибка входа'
         }
       }
+    },
+    resetErrors () {
+      this.error = null
+      this.validationErrors = {}
+    },
+    onModalSubmit () {
+      this.resetErrors()
     }
   }
 }
