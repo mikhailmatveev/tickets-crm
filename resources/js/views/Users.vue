@@ -13,7 +13,7 @@
     @user-deleted="onUserDeleted"
   />
   <add-user-modal
-    :open="isModalOpen"
+    :is-open="isModalOpen"
     @add-user-submit="onUserCreateSubmit"
     @add-user-cancel="onUserCreateCancel"
   />
