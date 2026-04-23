@@ -161,6 +161,7 @@ class TicketController extends Controller
                                     type: 'array',
                                     items: new OA\Items(type: 'string'),
                                     example: [
+                                        'Описание обязательно',
                                         'Описание не должно превышать 2000 символов'
                                     ]
                                 ),
