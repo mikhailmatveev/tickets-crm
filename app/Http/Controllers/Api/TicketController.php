@@ -12,8 +12,8 @@ use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\RateLimiter;
 use OpenApi\Attributes as OA;
-use RateLimiter;
 
 class TicketController extends Controller
 {
