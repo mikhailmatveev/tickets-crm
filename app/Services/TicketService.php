@@ -32,7 +32,7 @@ class TicketService
             return Ticket::create([
                 'customer_id' => $customer->id,
                 'subject' => $data['subject'],
-                'text' => $data['text'] ?? null,
+                'text' => $data['text'],
                 'status' => 'new',
             ]);
         });

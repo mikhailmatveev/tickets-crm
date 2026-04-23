@@ -12,8 +12,8 @@ use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\RateLimiter;
 use OpenApi\Attributes as OA;
-use RateLimiter;
 
 class TicketController extends Controller
 {
@@ -144,7 +144,7 @@ class TicketController extends Controller
                                     items: new OA\Items(type: 'string'),
                                     example: [
                                         'Телефон обязателен',
-                                        'Телефон не должен превышать 20 символов'
+                                        'Телефон должен быть в формате E.164 (только + и цифры)'
                                     ]
                                 ),
                                 new OA\Property(
@@ -161,6 +161,7 @@ class TicketController extends Controller
                                     type: 'array',
                                     items: new OA\Items(type: 'string'),
                                     example: [
+                                        'Описание обязательно',
                                         'Описание не должно превышать 2000 символов'
                                     ]
                                 ),

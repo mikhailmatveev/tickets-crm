@@ -54,21 +54,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('/api/ticket/create', {
         method: 'POST',
         headers: {
-          'X-CSRF-TOKEN': csrfToken
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: formData,
       });
 
       let data = {};
 
-      try {
-        data = await response.json();
-      } catch (e) {
-        console.error(e)
+      const isJson = response.headers.get('content-type')?.includes('application/json');
+
+      // Дополнительная проверка, на случай, если сервер отдал не JSON
+      if (!isJson) {
+        throw {
+          status: response.status || 500,
+          data: { message: 'Некорректный формат ответа сервера.' }
+        };
       }
+
+      data = await response.json();
 
       if (!response.ok) {
         throw { status: response.status, data };
+      }
+
+      if (!data.id) {
+        throw { status: 500, data: { message: 'Сервер не вернул идентификатор тикета.' } };
       }
 
       showSuccess(data.id);
