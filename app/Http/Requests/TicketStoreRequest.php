@@ -57,7 +57,7 @@ class TicketStoreRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|regex:/^\+[1-9]\d{7,14}$/',
             'subject' => 'required|string|max:255',
             'text' => 'required|string|max:2000',
             'attachments' => 'nullable|array|max:5',
@@ -74,7 +74,7 @@ class TicketStoreRequest extends FormRequest
             'email.email' => 'Некорректный формат E-mail',
             'email.max' => 'E-mail не должен превышать 255 символов',
             'phone.required' => 'Телефон обязателен',
-            'phone.max' => 'Телефон не должен превышать 20 символов',
+            'phone.regex' => 'Телефон должен быть в формате E.164 (только + и цифры)',
             'subject.required' => 'Тема обращения обязательна',
             'subject.max' => 'Тема не должна превышать 255 символов',
             'text.required' => 'Описание обязательно',

@@ -144,7 +144,7 @@ class TicketController extends Controller
                                     items: new OA\Items(type: 'string'),
                                     example: [
                                         'Телефон обязателен',
-                                        'Телефон не должен превышать 20 символов'
+                                        'Телефон должен быть в формате E.164 (только + и цифры)'
                                     ]
                                 ),
                                 new OA\Property(
