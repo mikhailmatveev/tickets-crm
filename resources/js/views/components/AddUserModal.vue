@@ -4,7 +4,7 @@
       <h2>
         Добавить пользователя
       </h2>
-      <form>
+      <form v-if="mode === 'form'">
         <fieldset>
           <label>
             Имя
@@ -72,29 +72,28 @@
           </label>
         </fieldset>
       </form>
+      <p v-if="mode === 'error'">
+        {{ error }}
+      </p>
       <footer>
         <button
           role="button"
-          @click="onAddModalSubmit"
+          :disabled="fetchingCreateUser"
+          @click="submit"
         >
           OK
         </button>
         <button
+          v-if="mode !== 'error'"
           role="button"
           class="secondary"
-          @click="onAddModalCancel"
+          @click="cancel"
         >
           Отмена
         </button>
       </footer>
     </article>
   </dialog>
-  <modal
-    header-text="Ошибка при создании пользователя"
-    :is-open="error !== null"
-    :body-text="error"
-    @submit="onModalSubmit"
-  />
 </template>
 
 <script>
@@ -103,13 +102,9 @@ import roleConstants from './../../constants/roles'
 import { getMessage } from '../../helpers/apiErrors'
 import { getMessages } from '../../helpers/validationErrors'
 import { toRoleMap } from './../../helpers/roleMapper'
-import Modal from './Modal.vue'
 
 export default {
   name: 'AddUserModal',
-  components: {
-    Modal
-  },
   props: {
     isOpen: {
       type: Boolean,
@@ -124,12 +119,8 @@ export default {
     return {
       error: null,
       fetchingCreateUser: false,
-      user: {
-        name: '',
-        email: '',
-        password: '',
-        role: roleConstants.MANAGER
-      },
+      mode: 'form',
+      user: this.initUser(),
       validationErrors: {}
     }
   },
@@ -139,36 +130,66 @@ export default {
     }
   },
   methods: {
-    async onAddModalSubmit () {
+    async createUser () {
       this.fetchingCreateUser = true
       try {
         // Сброс ошибок, если были ранее
         this.resetErrors()
         const response = await http.createUser(this.user)
-        this.$emit('add-user-submit', response.data)
+        // При успешном создании пользователя нужно сбросить поля формы
+        this.resetForm()
+        this.onAddModalSubmit(response.data)
       } catch (e) {
         if (e.response && e.response.status) {
           if (e.response.status === 422) {
             this.validationErrors = getMessages(e)
           } else {
             this.error = getMessage(e)
+            this.mode = 'error'
           }
         } else {
           this.error = 'Ошибка выполнения запроса'
+          this.mode = 'error'
         }
       } finally {
         this.fetchingCreateUser = false
       }
     },
+    cancel () {
+      this.resetErrors()
+      this.resetForm()
+      this.onAddModalCancel()
+    },
+    initUser () {
+      return {
+        name: '',
+        email: '',
+        password: '',
+        role: roleConstants.MANAGER
+      }
+    },
+    async submit () {
+      switch (this.mode) {
+        case 'form': await this.createUser()
+          break
+        case 'error': this.cancel()
+          break
+        default: this.cancel()
+      }
+    },
+    onAddModalSubmit (user) {
+      this.$emit('add-user-submit', user)
+    },
     onAddModalCancel () {
       this.$emit('add-user-cancel')
     },
-    onModalSubmit () {
-      this.resetErrors()
-    },
     resetErrors () {
+      this.mode = 'form'
       this.error = null
       this.validationErrors = {}
+    },
+    resetForm () {
+      this.user = this.initUser()
     }
   }
 }
