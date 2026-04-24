@@ -1,4 +1,5 @@
 import statuses from '../constants/statuses'
+import { createMapper } from './mapper'
 
 const map = {
   [statuses.DONE]: 'Выполнено',
@@ -6,9 +7,7 @@ const map = {
   [statuses.WORKING]: 'В работе'
 }
 
-const toTextMap = Object.fromEntries(
-  Object.entries(map).map(([status, text]) => [text, status])
-)
+const toTextMap = createMapper(map)
 
 export function toStatusMap () {
   return Object.entries(map).map(([status, text]) => ({ status, text }))
