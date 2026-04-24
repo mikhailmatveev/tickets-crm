@@ -7,6 +7,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserDeleteRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -122,6 +123,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
+            'email_verified_at' => Carbon::now()
         ]);
         $user->assignRole($validated['role']);
         return new UserResource($user)
