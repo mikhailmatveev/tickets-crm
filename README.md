@@ -36,6 +36,10 @@ ADMIN_PASSWORD=password
 
 ## Прогон тестов
 
+Сперва необходимо наполнить базу для `.env.testing` чтобы корректно отработали Unit-тесты
+
+А затем, выполняем прогон Unit и Feature тестов
+
 `php artisan test`
 
 Должен появиться такой вывод
@@ -48,11 +52,23 @@ PASS  Tests\Unit\SeederTest
 ✓ that all ticket replies linked to manager users                                                                                                                            0.02s  
 ✓ that ticket replies has at least one reply                                                                                                                                 0.02s
 
-PASS  Tests\Feature\ExampleTest
-✓ the application returns a successful response                                                                                                                              0.08s
+PASS  Tests\Feature\MainPageTest
+✓ the application returns a successful response                                                                                                                              0.04s  
 
-Tests:    6 passed (6 assertions)
-Duration: 0.37s
+PASS  Tests\Feature\UserCreateTest
+✓ admin can create user                                                                                                                                                      2.68s  
+✓ manager cannot create user                                                                                                                                                 0.07s  
+
+PASS  Tests\Feature\UserDeleteTest
+✓ admin can delete user                                                                                                                                                      0.08s  
+✓ manager cannot delete user                                                                                                                                                 0.06s  
+
+PASS  Tests\Feature\UserUpdateRoleTest
+✓ admin can update role                                                                                                                                                      0.08s  
+✓ manager cannot update role                                                                                                                                                 0.07s  
+
+Tests:    12 passed (19 assertions)
+Duration: 3.29s
 ```
 
 ## Запуск dev сервера Laravel
