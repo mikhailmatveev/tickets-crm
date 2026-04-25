@@ -38,6 +38,8 @@ ADMIN_PASSWORD=password
 
 Сперва необходимо наполнить базу для `.env.testing` чтобы корректно отработали Unit-тесты
 
+`php artisan db:seed --env=testing`
+
 А затем, выполняем прогон Unit и Feature тестов
 
 `php artisan test`
