@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\User\Permission;
+use App\Enums\User\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
@@ -22,7 +24,11 @@ class UserUpdateRoleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        if (!auth()->check()) {
+            return false;
+        }
+        $user = auth()->user();
+        return $user?->hasRole(Role::ADMIN) && $user?->can(Permission::CHANGE_USER_ROLE);
     }
 
     public function rules(): array
