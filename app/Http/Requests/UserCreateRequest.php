@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\User\Permission;
 use App\Enums\User\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -44,7 +45,11 @@ class UserCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasRole(Role::ADMIN) ?? false;
+        if (!auth()->check()) {
+            return false;
+        }
+        $user = auth()->user();
+        return $user?->hasRole(Role::ADMIN) && $user?->can(Permission::CREATE_USER);
     }
 
     public function rules(): array
