@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class
         ]);
         // Наполнение базы фейковыми данными только для локальной и dev версии
-        if (app()->environment('local', 'development')) {
+        if (!app()->environment('production')) {
             $this->call([
                 UserSeeder::class,
                 CustomerSeeder::class,
