@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\User\Permission;
 use App\Enums\User\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -11,18 +12,6 @@ use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
-    public function boot(): void
-    {
-        parent::boot();
-
-        Telescope::auth(function ($request) {
-            return $request->user()?->hasRole(Role::ADMIN) ?? false;
-        });
-    }
-
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         Telescope::night();
@@ -66,8 +55,9 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewTelescope', function (User $user) {
-            return $user->hasRole(Role::ADMIN);
+        Gate::define('viewTelescope', function (?User $user): bool {
+            return $user->hasExactRoles(Role::ADMIN) &&
+                $user->hasPermissionTo(Permission::VIEW_TELESCOPE);
         });
     }
 }
