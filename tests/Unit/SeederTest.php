@@ -8,11 +8,17 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
-use Spatie\Permission\PermissionRegistrar;
+use Database\Seeders\DatabaseSeeder;
 use Tests\TestCase;
 
 class SeederTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(DatabaseSeeder::class);
+    }
+
     /**
      * Проверяет, что существует хотя бы один админ
      * @return void
@@ -94,12 +100,5 @@ class SeederTest extends TestCase
                 )
                 ->count()
         );
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->app->make(PermissionRegistrar::class)
-            ->forgetCachedPermissions();
     }
 }
