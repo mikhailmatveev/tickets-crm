@@ -4,39 +4,24 @@ namespace Tests\Feature;
 
 use App\Enums\User\Role as RoleEnum;
 use App\Models\User;
-use Database\Seeders\RoleAndPermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
 
-class UserUpdateRoleTest extends TestCase
+class UserUpdateRoleTest extends UserTest
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleAndPermissionSeeder::class);
-    }
-
     /**
      * Тест смены роли пользователя из-под админа (ожидаем 200-й ответ)
      * @return void
      */
     public function test_admin_can_update_role(): void
     {
-        $admin = User::factory()
-            ->admin()
-            ->create()
-        ;
+        // Логинимся как админ
+        $this->actingAsAdmin();
 
+        // Создаём тестового пользователя, которому попытаемся изменить роль
         $targetUser = User::factory()
             ->admin()
             ->create()
         ;
-
-        $this->be($admin, 'sanctum');
 
         $payload = [
             'role_id' => Role::where('name', RoleEnum::MANAGER)
@@ -44,6 +29,7 @@ class UserUpdateRoleTest extends TestCase
                 ->id
         ];
 
+        // PUT /api/user/{id}/role
         $response = $this->putJson("/api/user/{$targetUser->id}/role", $payload);
 
         // 200-й ответ
@@ -65,17 +51,14 @@ class UserUpdateRoleTest extends TestCase
      */
     public function test_manager_cannot_update_role(): void
     {
-        $manager = User::factory()
-            ->manager()
-            ->create()
-        ;
+        // Логинимся как менеджер
+        $this->actingAsManager();
 
+        // Создаём тестового пользователя, которому попытаемся изменить роль
         $targetUser = User::factory()
             ->admin()
             ->create()
         ;
-
-        $this->be($manager, 'sanctum');
 
         $payload = [
             'role_id' => Role::where('name', RoleEnum::MANAGER)
@@ -83,6 +66,7 @@ class UserUpdateRoleTest extends TestCase
                 ->id
         ];
 
+        // PUT /api/user/{id}/role
         $response = $this->putJson("/api/user/{$targetUser->id}/role", $payload);
 
         // 403-й ответ
