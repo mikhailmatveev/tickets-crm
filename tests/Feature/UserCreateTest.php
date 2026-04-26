@@ -3,20 +3,22 @@
 namespace Tests\Feature;
 
 use App\Enums\User\Role;
-use App\Models\User;
-use Database\Seeders\RoleAndPermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class UserCreateTest extends TestCase
+class UserCreateTest extends UserTest
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
+    /**
+     * По-умолчанию возвращает массив валидных полей, которые через $overrides можно переопределить для тестов на валидацию
+     * @param array $overrides Массив для переопределения валидных полей
+     * @return array
+     */
+    protected function validPayload(array $overrides = []): array
     {
-        parent::setUp();
-
-        $this->seed(RoleAndPermissionSeeder::class);
+        return array_merge([
+            'name' => 'Test Manager',
+            'email' => 'test.manager@example.com',
+            'password' => 'secret123',
+            'role' => Role::MANAGER
+        ], $overrides);
     }
 
     /**
@@ -25,20 +27,12 @@ class UserCreateTest extends TestCase
      */
     public function test_admin_can_create_user(): void
     {
-        $admin = User::factory()
-            ->admin()
-            ->create()
-        ;
+        // Логинимся как админ
+        $this->actingAsAdmin();
 
-        $this->be($admin, 'sanctum');
+        $payload = $this->validPayload();
 
-        $payload = [
-            'name' => 'Test Manager',
-            'email' => 'test.manager@example.com',
-            'password' => 'secret123',
-            'role' => Role::MANAGER
-        ];
-
+        // POST /api/user
         $response = $this->postJson('/api/user', $payload);
 
         // 201-й ответ
@@ -56,20 +50,12 @@ class UserCreateTest extends TestCase
      */
     public function test_manager_cannot_create_user(): void
     {
-        $manager = User::factory()
-            ->manager()
-            ->create()
-        ;
+        // Логинимся как менеджер
+        $this->actingAsManager();
 
-        $this->be($manager, 'sanctum');
+        $payload = $this->validPayload();
 
-        $payload = [
-            'name' => 'Blocked User',
-            'email' => 'blocked.user@example.com',
-            'password' => 'secret123',
-            'role' => Role::MANAGER
-        ];
-
+        // POST /api/user
         $response = $this->postJson('/api/user', $payload);
 
         // 403-й ответ

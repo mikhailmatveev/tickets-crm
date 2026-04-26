@@ -65,7 +65,6 @@ class UserCreateRequest extends FormRequest
                     'users',
                     'email'
                 )
-                    ->whereNull('deleted_at')
             ],
             'password' => 'required|string|min:6',
             'role' => [
