@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Enums\User\Role;
-use App\Models\User;
 
 class UserDeleteTest extends UserTest
 {
