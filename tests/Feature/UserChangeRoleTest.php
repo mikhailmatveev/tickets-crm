@@ -9,10 +9,6 @@ use Tests\Feature\UserTest;
 
 class UserChangeRoleTest extends UserTest
 {
-    protected array $userData = [
-        'email' => 'user@example.com'
-    ];
-
     /**
      * Тест смены роли пользователю из-под админа (ожидаем 200-й ответ)
      * @return void
@@ -22,10 +18,7 @@ class UserChangeRoleTest extends UserTest
         // Логинимся как админ
         $this->actingAsAdmin();
         // Тестовый пользователь
-        $user = User::factory()
-            ->create($this->userData)
-            ->assignRole(RoleEnum::ADMIN)
-        ;
+        $user = $this->createUser(RoleEnum::ADMIN);
         // PUT /api/user/{id}/role
         $response = $this->putJson("/api/user/{$user->id}/role", [
             'role_id' => $this->getValidRoleId(RoleEnum::MANAGER)
@@ -33,7 +26,7 @@ class UserChangeRoleTest extends UserTest
         // 200-й ответ
         $response->assertOk();
         // Найдём тестового пользователя в базе
-        $user = User::where('email', $this->userData['email'])
+        $user = User::where('email', $user->email)
             ->firstOrFail()
         ;
         // Проверяем, что роль у пользователя осталась прежней
@@ -49,10 +42,7 @@ class UserChangeRoleTest extends UserTest
         // Логинимся как менеджер
         $this->actingAsManager();
         // Тестовый пользователь
-        $user = User::factory()
-            ->create($this->userData)
-            ->assignRole(RoleEnum::ADMIN)
-        ;
+        $user = $this->createUser(RoleEnum::ADMIN);
         // PUT /api/user/{id}/role
         $response = $this->putJson("/api/user/{$user->id}/role", [
             'role_id' => $this->getValidRoleId(RoleEnum::MANAGER)
@@ -60,11 +50,28 @@ class UserChangeRoleTest extends UserTest
         // 403-й ответ
         $response->assertForbidden();
         // Найдём тестового пользователя в базе
-        $user = User::where('email', $this->userData['email'])
+        $user = User::where('email', $user->email)
             ->firstOrFail()
         ;
         // Проверяем, что роль у пользователя осталась прежней
         $this->assertTrue($user->hasRole(RoleEnum::ADMIN));
+    }
+
+    /**
+     * Хелпер-метод создания тестового пользователя
+     * @param RoleEnum $role Роль
+     * @return User Пользователь из модели User
+     */
+    protected function createUser(RoleEnum $role): User
+    {
+        return match ($role) {
+            RoleEnum::ADMIN => User::factory()
+                ->admin()
+                ->create(),
+            RoleEnum::MANAGER => User::factory()
+                ->manager()
+                ->create()
+        };
     }
 
     /**
