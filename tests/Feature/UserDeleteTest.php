@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Enums\User\Role;
 
 class UserDeleteTest extends UserTest
 {
@@ -16,10 +16,7 @@ class UserDeleteTest extends UserTest
         $this->actingAsAdmin();
 
         // Создаём тестового пользователя, которого попытаемся удалить
-        $targetUser = User::factory()
-            ->manager()
-            ->create()
-        ;
+        $targetUser = $this->createUser(Role::MANAGER);
 
         // DELETE /api/user/{id}
         $response = $this->deleteJson("/api/user/{$targetUser->id}");
@@ -42,10 +39,7 @@ class UserDeleteTest extends UserTest
         $this->actingAsManager();
 
         // Создаём тестового пользователя, которого попытаемся удалить
-        $targetUser = User::factory()
-            ->admin()
-            ->create()
-        ;
+        $targetUser = $this->createUser(Role::ADMIN);
 
         // DELETE /api/user/{id}
         $response = $this->deleteJson("/api/user/{$targetUser->id}");
