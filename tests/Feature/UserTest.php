@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\User\Role;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -39,5 +39,22 @@ class UserTest extends TestCase
             ->create()
         ;
         $this->be($manager, 'sanctum');
+    }
+
+    /**
+     * Хелпер-метод создания тестового пользователя
+     * @param Role $role Роль
+     * @return User Пользователь из модели User
+     */
+    protected function createUser(Role $role): User
+    {
+        return match ($role) {
+            Role::ADMIN => User::factory()
+                ->admin()
+                ->create(),
+            Role::MANAGER => User::factory()
+                ->manager()
+                ->create()
+        };
     }
 }
