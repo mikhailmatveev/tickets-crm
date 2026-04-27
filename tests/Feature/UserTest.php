@@ -21,10 +21,7 @@ class UserTest extends TestCase
      */
     protected function actingAsAdmin(): void
     {
-        $admin = User::factory()
-            ->admin()
-            ->create()
-        ;
+        $admin = $this->createUser(Role::ADMIN);
         $this->be($admin, 'sanctum');
     }
 
@@ -34,10 +31,7 @@ class UserTest extends TestCase
      */
     protected function actingAsManager(): void
     {
-        $manager = User::factory()
-            ->manager()
-            ->create()
-        ;
+        $manager = $this->createUser(Role::MANAGER);
         $this->be($manager, 'sanctum');
     }
 
