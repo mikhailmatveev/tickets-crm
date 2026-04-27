@@ -58,23 +58,6 @@ class UserChangeRoleTest extends UserTest
     }
 
     /**
-     * Хелпер-метод создания тестового пользователя
-     * @param RoleEnum $role Роль
-     * @return User Пользователь из модели User
-     */
-    protected function createUser(RoleEnum $role): User
-    {
-        return match ($role) {
-            RoleEnum::ADMIN => User::factory()
-                ->admin()
-                ->create(),
-            RoleEnum::MANAGER => User::factory()
-                ->manager()
-                ->create()
-        };
-    }
-
-    /**
      * Хелпер-метод получения ID роли по её имени
      * @param RoleEnum $role Роль
      * @return int ID роли в таблице roles
