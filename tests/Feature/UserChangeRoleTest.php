@@ -1,11 +1,10 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Enums\User\Role as RoleEnum;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use Tests\Feature\UserTest;
 
 class UserChangeRoleTest extends UserTest
 {

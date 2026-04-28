@@ -1,9 +1,8 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Models\User;
-use Tests\Feature\UserCreateTest;
 
 class UserCreateValidationTest extends UserCreateTest
 {

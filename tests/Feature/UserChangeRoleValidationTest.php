@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature;
+namespace Tests\Feature;
 
 use App\Enums\User\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
