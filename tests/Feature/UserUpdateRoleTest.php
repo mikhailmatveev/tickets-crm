@@ -74,7 +74,7 @@ class UserUpdateRoleTest extends UserTest
     {
         return [
             'admin can update role' => [RoleEnum::ADMIN, 200],
-            'manager_cannot_update_role' => [RoleEnum::MANAGER, 403]
+            'manager cannot update role' => [RoleEnum::MANAGER, 403]
         ];
     }
 
