@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
+use Throwable;
 
 #[OA\Schema(
     schema: 'TicketFilterRequest',
@@ -92,9 +93,13 @@ class TicketFilterRequest extends FormRequest
         }
 
         if ($this->filled('date')) {
-            $this->merge([
-                'date' => Carbon::parse($this->date)->toDateString()
-            ]);
+            try {
+                $this->merge([
+                    'date' => Carbon::parse($this->date)->toDateString(),
+                ]);
+            } catch (Throwable) {
+                // Оставляем исходное значение, чтобы rule 'date' отработал и вернул 422
+            }
         }
     }
 }
