@@ -3,53 +3,131 @@
 namespace Tests\Feature;
 
 use App\Enums\User\Role;
+use App\Models\User;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class UserDeleteTest extends UserTest
 {
     /**
-     * Тест удаления пользователя из-под админа (ожидаем 200-й ответ)
+     * Тест проверки привилегий пользователей на удаление пользователя
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param int $expectedStatus Какой статус ответа ожидаем
      * @return void
      */
-    public function test_admin_can_delete_user(): void
+    #[DataProvider('permissionsDataProvider')]
+    public function test_delete_user_permissions(
+        Role $actingAsRole,
+        int $expectedStatus
+    ): void
     {
-        // Логинимся как админ
-        $this->actingAsAdmin();
-
-        // Создаём тестового пользователя, которого попытаемся удалить
-        $targetUser = $this->createUser(Role::MANAGER);
-
-        // DELETE /api/user/{id}
-        $response = $this->deleteJson("/api/user/{$targetUser->id}");
-
-        // 200-й ответ
-        $response->assertOk();
-
-        $this->assertSoftDeleted('users', [
-            'id' => $targetUser->id
-        ]);
+        // Создадим тестового пользователя
+        $user = $this->createUser(Role::MANAGER);
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest($actingAsRole, $user->id);
+        // Ожидаем получить статус ответа тот же, что и в провайдере данных
+        $response->assertStatus($expectedStatus);
+        // Ожидаем, что пользователь будет удалён
+        if ($actingAsRole === Role::ADMIN) {
+            $this->assertSoftDeleted('users', [
+                'id' => $user->id,
+            ]);
+        }
+        // Ожидаем, что пользователь не будет удалён
+        if ($actingAsRole === Role::MANAGER) {
+            $this->assertDatabaseHas('users', [
+                'id' => $user->id,
+                'deleted_at' => null
+            ]);
+        }
     }
 
     /**
-     * Тест удаления пользователя из-под менеджера (ожидаем 403-й ответ)
+     * Тест на валидацию полей при удалении пользователя
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param array $overrides Массив полей, которые хотим переопределить
+     * @param int $expectedStatus Какой статус ответа ожидаем
+     * @param array $expectedValidationErrors Список ошибок валидации, которые ожидаем получить
      * @return void
      */
-    public function test_manager_cannot_delete_user(): void
+    #[DataProvider('validationDataProvider')]
+    public function test_delete_user_validation(
+        Role $actingAsRole,
+        array $overrides,
+        int $expectedStatus,
+        array $expectedValidationErrors
+    ): void
     {
-        // Логинимся как менеджер
-        $this->actingAsManager();
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest($actingAsRole, $overrides['id']);
+        // Ожидаем получить статус ответа тот же, что и в провайдере данных
+        $response->assertStatus($expectedStatus);
+        // Ожидаем получить список ошибок валидации, что и в провайдере данных
+        if (!empty($expectedValidationErrors)) {
+            $response->assertJsonValidationErrors($expectedValidationErrors);
+        }
+    }
 
-        // Создаём тестового пользователя, которого попытаемся удалить
-        $targetUser = $this->createUser(Role::ADMIN);
+    /**
+     * Проверка на существование id в базе
+     * @return void
+     */
+    public function test_delete_user_validation_exists(): void
+    {
+        // Передаём id несуществующего пользователя
+        $missingId = (int) User::query()->max('id') + 1000;
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest(Role::ADMIN, $missingId);
+        // 422-й ответ
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['id'])
+        ;
+    }
 
+    public static function permissionsDataProvider(): array
+    {
+        return [
+            'admin can delete user' => [Role::ADMIN, 200],
+            'manager cannot delete user' => [Role::MANAGER, 403]
+        ];
+    }
+
+    public static function validationDataProvider(): array
+    {
+        return [
+            'id must be integer' => self::defaultValidationDataProvider([
+                'overrides' => ['id' => 'not-integer']
+            ]),
+            'id must be greater than zero (0)' => self::defaultValidationDataProvider([
+                'overrides' => ['id' => 0]
+            ]),
+            'id must be greater than zero (-5)' => self::defaultValidationDataProvider([
+                'overrides' => ['id' => -5]
+            ])
+        ];
+    }
+
+    protected static function defaultValidationDataProvider(array $overrides = []): array
+    {
+        return array_merge([
+            'actingAsRole' => Role::ADMIN,
+            'expectedStatus' => 422,
+            'expectedValidationErrors' => ['id']
+        ], $overrides);
+    }
+
+    /**
+     * Хелпер-матод для выполнения запроса под заданной ролью
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param mixed $userId ID пользователя
+     * @return TestResponse
+     */
+    protected function doActingAsRoleRequest(Role $actingAsRole, mixed $userId): TestResponse
+    {
+        // Логинимся под требуемой ролью
+        $this->actingAsRole($actingAsRole);
         // DELETE /api/user/{id}
-        $response = $this->deleteJson("/api/user/{$targetUser->id}");
-
-        // 403-й ответ
-        $response->assertForbidden();
-
-        $this->assertDatabaseHas('users', [
-            'id' => $targetUser->id,
-            'deleted_at' => null
-        ]);
+        return $this->deleteJson("/api/user/{$userId}");
     }
 }
