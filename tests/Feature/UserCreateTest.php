@@ -3,9 +3,199 @@
 namespace Tests\Feature;
 
 use App\Enums\User\Role;
+use App\Models\User;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class UserCreateTest extends UserTest
 {
+    /**
+     * Тест проверки привилегий пользователей на создание пользователя
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param int $expectedStatus Какой статус ответа ожидаем
+     * @return void
+     */
+    #[DataProvider('permissionsDataProvider')]
+    public function test_create_user_permissions(
+        Role $actingAsRole,
+        int $expectedStatus
+    ): void
+    {
+        $payload = $this->validPayload();
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest($actingAsRole, $payload);
+        // Ожидаем получить статус ответа тот же, что и в провайдере данных
+        $response->assertStatus($expectedStatus);
+        // Ожидаем, что пользователь будет создан
+        if ($actingAsRole === Role::ADMIN) {
+            $this->assertDatabaseHas('users', [
+                'email' => $payload['email'],
+                'name' => $payload['name']
+            ]);
+        }
+        // Ожидаем, что пользователь не создастся
+        if ($actingAsRole === Role::MANAGER) {
+            $this->assertDatabaseMissing('users', [
+                'email' => $payload['email']
+            ]);
+        }
+    }
+
+    /**
+     * Тест на валидацию полей при создании пользователя
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param array $overrides Массив полей, которые хотим переопределить
+     * @param int $expectedStatus Какой статус ответа ожидаем
+     * @param array $expectedValidationErrors Список ошибок валидации, которые ожидаем получить
+     * @return void
+     */
+    #[DataProvider('validationDataProvider')]
+    public function test_create_user_validation(
+        Role $actingAsRole,
+        array $overrides,
+        int $expectedStatus,
+        array $expectedValidationErrors
+    ): void
+    {
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest($actingAsRole, $this->validPayload($overrides));
+        // Ожидаем получить статус ответа тот же, что и в провайдере данных
+        $response->assertStatus($expectedStatus);
+        // Ожидаем получить список ошибок валидации, что и в провайдере данных
+        if (!empty($expectedValidationErrors)) {
+            $response->assertJsonValidationErrors($expectedValidationErrors);
+        }
+    }
+
+    /**
+     * Проверка уникальности email (пользователей с одинаковым email не должно существовать)
+     * @return void
+     */
+    public function test_create_user_unique_email(): void
+    {
+        // Создаём тестового пользователя
+        User::factory()->create(['email' => 'duplicate@example.com']);
+        // Выполняем запрос с переданной ролью
+        $response = $this->doActingAsRoleRequest(
+            Role::ADMIN,
+            $this->validPayload(['email' => 'duplicate@example.com'])
+        );
+        // 422-й ответ
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['email'])
+        ;
+    }
+
+    public static function permissionsDataProvider(): array
+    {
+        return [
+            'admin can create user' => [Role::ADMIN, 201],
+            'manager cannot create user' => [Role::MANAGER, 403]
+        ];
+    }
+
+    public static function validationDataProvider(): array
+    {
+        return [
+            'name is required' => self::defaultValidationDataProvider([
+                'overrides' => ['name' => ''],
+                'expectedValidationErrors' => ['name']
+            ]),
+            'name must be string' => self::defaultValidationDataProvider([
+                'overrides' => ['name' => ['not-string']],
+                'expectedValidationErrors' => ['name']
+            ]),
+            'name must not exceed 255 chars' => self::defaultValidationDataProvider([
+                'overrides' => ['name' => str_repeat('a', 256)],
+                'expectedValidationErrors' => ['name']
+            ]),
+            'email is required' => self::defaultValidationDataProvider([
+                'overrides' => ['email' => ''],
+                'expectedValidationErrors' => ['email']
+            ]),
+            'email must be string' => self::defaultValidationDataProvider([
+                'overrides' => ['email' => ['not-string']],
+                'expectedValidationErrors' => ['email']
+            ]),
+            'email must be valid' => self::defaultValidationDataProvider([
+                'overrides' => ['email' => 'invalid-email'],
+                'expectedValidationErrors' => ['email']
+            ]),
+            'password is required' => self::defaultValidationDataProvider([
+                'overrides' => ['password' => ''],
+                'expectedValidationErrors' => ['password']
+            ]),
+            'password must be string' => self::defaultValidationDataProvider([
+                'overrides' => ['password' => ''],
+                'expectedValidationErrors' => ['password']
+            ]),
+            'password must have min 6 chars' => self::defaultValidationDataProvider([
+                'overrides' => ['password' => '12345'],
+                'expectedValidationErrors' => ['password']
+            ]),
+            'role is required' => self::defaultValidationDataProvider([
+                'overrides' => ['role' => ''],
+                'expectedValidationErrors' => ['role']
+            ]),
+            'role must be string' => self::defaultValidationDataProvider([
+                'overrides' => ['role' => ['manager']],
+                'expectedValidationErrors' => ['role']
+            ]),
+            'role must be in allowed values' => self::defaultValidationDataProvider([
+                'overrides' => ['role' => 'super-admin'],
+                'expectedValidationErrors' => ['role']
+            ]),
+            'validation reports multiple fields at once' => self::defaultValidationDataProvider([
+                'overrides' => [
+                    'name' => '',
+                    'email' => 'wrong-email',
+                    'password' => '123',
+                    'role' => 'invalid-role',
+                ],
+                'expectedValidationErrors' => ['name', 'email', 'password', 'role']
+            ])
+        ];
+    }
+
+    protected static function defaultValidationDataProvider(array $overrides = []): array
+    {
+        return array_merge([
+            'actingAsRole' => Role::ADMIN,
+            'expectedStatus' => 422,
+            'expectedValidationErrors' => []
+        ], $overrides);
+    }
+
+    /**
+     * Возвращает массив с изначально дефолтными значениями, переопределяемыми в $overrides, для провайдера данных
+     * @param array $overrides Массив для переопределения дефолтных значений
+     * @return array Изменённый массив
+     */
+    protected static function defaultProviderData(array $overrides = []): array
+    {
+        return array_merge([
+            'actingAsRole' => Role::ADMIN,
+            'overrides' => [],
+            'expectedStatus' => 422,
+            'expectedValidationErrors' => []
+        ], $overrides);
+    }
+
+    /**
+     * Хелпер-матод для выполнения запроса под заданной ролью
+     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param array $payload Массив полей для передачи в запрос
+     * @return TestResponse
+     */
+    protected function doActingAsRoleRequest(Role $actingAsRole, array $payload): TestResponse
+    {
+        // Логинимся под требуемой ролью
+        $this->actingAsRole($actingAsRole);
+        // POST /api/user
+        return $this->postJson('/api/user', $payload);
+    }
+
     /**
      * По-умолчанию возвращает массив валидных полей, которые через $overrides можно переопределить для тестов на валидацию
      * @param array $overrides Массив для переопределения валидных полей
@@ -19,50 +209,5 @@ class UserCreateTest extends UserTest
             'password' => 'secret123',
             'role' => Role::MANAGER
         ], $overrides);
-    }
-
-    /**
-     * Тест создания нового пользователя из-под админа (ожидаем 201-й ответ)
-     * @return void
-     */
-    public function test_admin_can_create_user(): void
-    {
-        // Логинимся как админ
-        $this->actingAsAdmin();
-
-        $payload = $this->validPayload();
-
-        // POST /api/user
-        $response = $this->postJson('/api/user', $payload);
-
-        // 201-й ответ
-        $response->assertCreated();
-
-        $this->assertDatabaseHas('users', [
-            'email' => $payload['email'],
-            'name' => $payload['name']
-        ]);
-    }
-
-    /**
-     * Тест создания нового пользователя из-под менеджера (ожидаем 403-й ответ)
-     * @return void
-     */
-    public function test_manager_cannot_create_user(): void
-    {
-        // Логинимся как менеджер
-        $this->actingAsManager();
-
-        $payload = $this->validPayload();
-
-        // POST /api/user
-        $response = $this->postJson('/api/user', $payload);
-
-        // 403-й ответ
-        $response->assertForbidden();
-
-        $this->assertDatabaseMissing('users', [
-            'email' => $payload['email']
-        ]);
     }
 }

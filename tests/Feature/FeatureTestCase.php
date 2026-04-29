@@ -9,23 +9,13 @@ use Tests\TestCase;
 class FeatureTestCase extends TestCase
 {
     /**
-     * Хелпер-метод для авторизации под админом
+     * Хелпер-метод для авторизации под требуемой ролью
+     * @param Role $role Роль
      * @return void
      */
-    protected function actingAsAdmin(): void
+    protected function actingAsRole(Role $role): void
     {
-        $admin = $this->createUser(Role::ADMIN);
-        $this->actingAs($admin, 'sanctum');
-    }
-
-    /**
-     * Хелпер-метод для авторизации под менеджером
-     * @return void
-     */
-    protected function actingAsManager(): void
-    {
-        $manager = $this->createUser(Role::MANAGER);
-        $this->actingAs($manager, 'sanctum');
+        $this->actingAs($this->createUser($role), 'sanctum');
     }
 
     /**
