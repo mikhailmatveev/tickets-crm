@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\Ticket\StatusEnum;
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use Carbon\Carbon;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -12,7 +12,7 @@ class TicketFilterTest extends TicketTest
 {
     #[DataProvider('validationDataProvider')]
     public function test_ticket_filter_validation(
-        Role $actingAsRole,
+        RoleEnum $actingAsRole,
         array $overrides,
         int $expectedStatus,
         array $expectedValidationErrors
@@ -100,7 +100,7 @@ class TicketFilterTest extends TicketTest
     protected static function defaultProviderData(array $overrides = []): array
     {
         return array_merge([
-            'actingAsRole' => Role::ADMIN,
+            'actingAsRole' => RoleEnum::ADMIN,
             'overrides' => [],
             'expectedStatus' => 422,
             'expectedValidationErrors' => []
@@ -109,11 +109,11 @@ class TicketFilterTest extends TicketTest
 
     /**
      * Хелпер-матод для выполнения запроса под заданной ролью
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param array $payload Массив полей для передачи в запрос
      * @return TestResponse
      */
-    protected function doActingAsRoleRequest(Role $actingAsRole, array $payload): TestResponse
+    protected function doActingAsRoleRequest(RoleEnum $actingAsRole, array $payload): TestResponse
     {
         // Логинимся под требуемой ролью
         $this->actingAsRole($actingAsRole);

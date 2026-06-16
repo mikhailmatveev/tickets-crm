@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +41,7 @@ class AdminSeeder extends Seeder
 
         if ($user->save()) {
             // Зададим роль
-            $user->assignRole(Role::ADMIN);
+            $user->assignRole(RoleEnum::ADMIN);
             $this->command->info('Администратор создан успешно');
         } else {
             $this->command->error('Произошла ошибка при создании администратора');

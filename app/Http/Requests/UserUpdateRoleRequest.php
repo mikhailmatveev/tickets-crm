@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\User\PermissionEnum;
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
@@ -28,7 +28,7 @@ class UserUpdateRoleRequest extends FormRequest
             return false;
         }
         $user = auth()->user();
-        return $user?->hasRole(Role::ADMIN) && $user?->can(PermissionEnum::CHANGE_USER_ROLE);
+        return $user?->hasRole(RoleEnum::ADMIN) && $user?->can(PermissionEnum::CHANGE_USER_ROLE);
     }
 
     public function rules(): array

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Enums\User\Role as RoleEnum;
+use App\Enums\User\RoleEnum as RoleEnum;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;

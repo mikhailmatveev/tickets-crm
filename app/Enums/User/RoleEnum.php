@@ -6,18 +6,18 @@ use Illuminate\Support\Collection;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Role',
+    schema: 'RoleEnum',
     type: 'string',
     enum: ['admin', 'manager']
 )]
-enum Role: string
+enum RoleEnum: string
 {
     case ADMIN = 'admin';
     case MANAGER = 'manager';
 
     public static function collection(): Collection
     {
-        return collect(self::cases())->map(fn (Role $role) => $role->value);
+        return collect(self::cases())->map(fn (RoleEnum $role) => $role->value);
     }
 
     public function middleware(): string

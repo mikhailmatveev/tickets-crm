@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,30 +11,30 @@ class UserDeleteTest extends UserTest
 {
     /**
      * Тест проверки привилегий пользователей на удаление пользователя
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param int $expectedStatus Какой статус ответа ожидаем
      * @return void
      */
     #[DataProvider('permissionsDataProvider')]
     public function test_delete_user_permissions(
-        Role $actingAsRole,
+        RoleEnum $actingAsRole,
         int $expectedStatus
     ): void
     {
         // Создадим тестового пользователя
-        $user = $this->createUser(Role::MANAGER);
+        $user = $this->createUser(RoleEnum::MANAGER);
         // Выполняем запрос с переданной ролью
         $response = $this->doActingAsRoleRequest($actingAsRole, $user->id);
         // Ожидаем получить статус ответа тот же, что и в провайдере данных
         $response->assertStatus($expectedStatus);
         // Ожидаем, что пользователь будет удалён
-        if ($actingAsRole === Role::ADMIN) {
+        if ($actingAsRole === RoleEnum::ADMIN) {
             $this->assertSoftDeleted('users', [
                 'id' => $user->id,
             ]);
         }
         // Ожидаем, что пользователь не будет удалён
-        if ($actingAsRole === Role::MANAGER) {
+        if ($actingAsRole === RoleEnum::MANAGER) {
             $this->assertDatabaseHas('users', [
                 'id' => $user->id,
                 'deleted_at' => null
@@ -44,7 +44,7 @@ class UserDeleteTest extends UserTest
 
     /**
      * Тест на валидацию полей при удалении пользователя
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param array $overrides Массив полей, которые хотим переопределить
      * @param int $expectedStatus Какой статус ответа ожидаем
      * @param array $expectedValidationErrors Список ошибок валидации, которые ожидаем получить
@@ -52,7 +52,7 @@ class UserDeleteTest extends UserTest
      */
     #[DataProvider('validationDataProvider')]
     public function test_delete_user_validation(
-        Role $actingAsRole,
+        RoleEnum $actingAsRole,
         array $overrides,
         int $expectedStatus,
         array $expectedValidationErrors
@@ -77,7 +77,7 @@ class UserDeleteTest extends UserTest
         // Передаём id несуществующего пользователя
         $missingId = (int) User::query()->max('id') + 1000;
         // Выполняем запрос с переданной ролью
-        $response = $this->doActingAsRoleRequest(Role::ADMIN, $missingId);
+        $response = $this->doActingAsRoleRequest(RoleEnum::ADMIN, $missingId);
         // 422-й ответ
         $response
             ->assertUnprocessable()
@@ -88,8 +88,8 @@ class UserDeleteTest extends UserTest
     public static function permissionsDataProvider(): array
     {
         return [
-            'admin can delete user' => [Role::ADMIN, 200],
-            'manager cannot delete user' => [Role::MANAGER, 403]
+            'admin can delete user' => [RoleEnum::ADMIN, 200],
+            'manager cannot delete user' => [RoleEnum::MANAGER, 403]
         ];
     }
 
@@ -111,7 +111,7 @@ class UserDeleteTest extends UserTest
     protected static function defaultValidationDataProvider(array $overrides = []): array
     {
         return array_merge([
-            'actingAsRole' => Role::ADMIN,
+            'actingAsRole' => RoleEnum::ADMIN,
             'expectedStatus' => 422,
             'expectedValidationErrors' => ['id']
         ], $overrides);
@@ -119,11 +119,11 @@ class UserDeleteTest extends UserTest
 
     /**
      * Хелпер-матод для выполнения запроса под заданной ролью
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param mixed $userId ID пользователя
      * @return TestResponse
      */
-    protected function doActingAsRoleRequest(Role $actingAsRole, mixed $userId): TestResponse
+    protected function doActingAsRoleRequest(RoleEnum $actingAsRole, mixed $userId): TestResponse
     {
         // Логинимся под требуемой ролью
         $this->actingAsRole($actingAsRole);

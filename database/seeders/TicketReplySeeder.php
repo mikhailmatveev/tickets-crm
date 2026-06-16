@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\Ticket\StatusEnum;
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
@@ -17,7 +17,7 @@ class TicketReplySeeder extends Seeder
     public function run(): void
     {
         $managers = User::query()
-            ->role(Role::MANAGER)
+            ->role(RoleEnum::MANAGER)
             ->get();
 
         if ($managers->isEmpty()) {

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Ticket\PeriodEnum;
 use App\Enums\Ticket\StatusEnum;
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatisticRequest;
 use App\Http\Resources\StatisticResource;
@@ -46,7 +46,7 @@ class StatisticController extends Controller
         $usersWithDoneTickets = User::whereHas(
             'roles',
             function ($query) {
-                $query->where('name', Role::MANAGER);
+                $query->where('name', RoleEnum::MANAGER);
             })
             ->withCount([
                 'ticketReplies as tickets_done' => function ($query) use ($ticketsQuery) {

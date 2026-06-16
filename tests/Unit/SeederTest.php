@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Enums\Ticket\StatusEnum;
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketReply;
@@ -28,7 +28,7 @@ class SeederTest extends TestCase
         $this->assertNotEquals(
             0,
             User::query()
-                ->role(Role::ADMIN)
+                ->role(RoleEnum::ADMIN)
                 ->count()
         );
     }
@@ -79,7 +79,7 @@ class SeederTest extends TestCase
             TicketReply::query()
                 ->whereHas(
                     'user',
-                    fn ($query) => $query->role(Role::ADMIN)
+                    fn ($query) => $query->role(RoleEnum::ADMIN)
                 )
                 ->count()
         );
@@ -96,7 +96,7 @@ class SeederTest extends TestCase
             TicketReply::query()
                 ->whereHas(
                     'user',
-                    fn ($query) => $query->role(Role::MANAGER)
+                    fn ($query) => $query->role(RoleEnum::MANAGER)
                 )
                 ->count()
         );
