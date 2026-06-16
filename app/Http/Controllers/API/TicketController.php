@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\DTO\CreateTicketData;
 use App\Http\Controllers\Controller;
