@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\StatisticController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserUpdateRoleController;
+use App\Http\Middleware\TicketRateLimit;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // API-метод для виджета
-Route::post('/ticket/create', [TicketController::class, 'create']);
+Route::post('/ticket/create', [TicketController::class, 'create'])
+    ->middleware(TicketRateLimit::class);
