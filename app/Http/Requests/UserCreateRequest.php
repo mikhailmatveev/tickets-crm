@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\User\Permission;
-use App\Enums\User\Role;
+use App\Enums\User\PermissionEnum;
+use App\Enums\User\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
@@ -36,7 +36,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'role',
-            ref: '#/components/schemas/Role',
+            ref: '#/components/schemas/RoleEnum',
             description: 'Роль пользователя'
         )
     ]
@@ -49,7 +49,7 @@ class UserCreateRequest extends FormRequest
             return false;
         }
         $user = auth()->user();
-        return $user?->hasRole(Role::ADMIN) && $user?->can(Permission::CREATE_USER);
+        return $user?->hasRole(RoleEnum::ADMIN) && $user?->can(PermissionEnum::CREATE_USER);
     }
 
     public function rules(): array
@@ -70,7 +70,7 @@ class UserCreateRequest extends FormRequest
             'role' => [
                 'required',
                 'string',
-                Rule::in(Role::collection())
+                Rule::in(RoleEnum::collection())
             ]
         ];
     }

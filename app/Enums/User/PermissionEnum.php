@@ -5,7 +5,7 @@ namespace App\Enums\User;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Permission',
+    schema: 'PermissionEnum',
     type: 'string',
     enum: [
         'change_ticket_status',
@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
         'view_tickets'
     ]
 )]
-enum Permission: string
+enum PermissionEnum: string
 {
     case CHANGE_TICKET_STATUS = 'change_ticket_status';
     case CHANGE_USER_PASSWORD = 'change_user_password';

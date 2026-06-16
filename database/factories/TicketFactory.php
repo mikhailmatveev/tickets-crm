@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -19,13 +19,13 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        $status = fake()->randomElement(Status::cases());
+        $status = fake()->randomElement(StatusEnum::cases());
         return [
             'customer_id' => Customer::factory(),
             'subject' => fake()->sentence(),
             'text' => fake()->paragraphs(3, true),
             'status' => $status,
-            'manager_replied_at' => $status !== Status::DONE
+            'manager_replied_at' => $status !== StatusEnum::DONE
                 ? null
                 : fake()
                     ->optional()
@@ -36,7 +36,7 @@ class TicketFactory extends Factory
     public function asNew(): static
     {
         return $this->state(fn () => [
-            'status' => Status::NEW,
+            'status' => StatusEnum::NEW,
             'manager_replied_at' => null
         ]);
     }
@@ -44,7 +44,7 @@ class TicketFactory extends Factory
     public function asWorking(): static
     {
         return $this->state(fn () => [
-            'status' => Status::WORKING,
+            'status' => StatusEnum::WORKING,
             'manager_replied_at' => null
         ]);
     }
@@ -52,7 +52,7 @@ class TicketFactory extends Factory
     public function asDone(): static
     {
         return $this->state(fn () => [
-            'status' => Status::DONE,
+            'status' => StatusEnum::DONE,
             'manager_replied_at' => fake()->dateTimeBetween('-1 month'),
         ]);
     }

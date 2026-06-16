@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -37,14 +37,14 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->afterCreating(function (User $user) {
-            $user->assignRole(Role::ADMIN);
+            $user->assignRole(RoleEnum::ADMIN);
         });
     }
 
     public function manager(): static
     {
         return $this->afterCreating(function (User $user) {
-            $user->assignRole(Role::MANAGER);
+            $user->assignRole(RoleEnum::MANAGER);
         });
     }
 

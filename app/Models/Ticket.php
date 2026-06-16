@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +20,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'customer_id', type: 'integer', example: 1),
         new OA\Property(property: 'subject', type: 'string', maxLength: 255, example: 'Проблема с заказом'),
         new OA\Property(property: 'text', type: 'string', example: 'Добрый день! Не прошёл заказ. Что делать?'),
-        new OA\Property(property: 'status', ref: '#/components/schemas/Status', default: 'new'),
+        new OA\Property(property: 'status', ref: '#/components/schemas/StatusEnum', default: 'new'),
         new OA\Property(property: 'manager_replied_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
         new OA\Property(property: 'created_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
         new OA\Property(property: 'updated_at', type: Carbon::class, format: 'date-time', example: '2026-04-17T10:00:00Z', nullable: true),
@@ -45,7 +45,7 @@ class Ticket extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'status' => Status::class,
+            'status' => StatusEnum::class,
             'manager_replied_at' => 'datetime',
         ];
     }
@@ -72,10 +72,10 @@ class Ticket extends Model implements HasMedia
     /**
      * Обновляет статус тикету и если тикету присваивается статус "Выполнено",
      * то обновляется и manager_replied_at
-     * @param Status $status Статус тикета
+     * @param StatusEnum $status Статус тикета
      * @return void
      */
-    public function changeStatus(Status $status): void
+    public function changeStatus(StatusEnum $status): void
     {
         $this->status = $status;
 
@@ -96,7 +96,7 @@ class Ticket extends Model implements HasMedia
      */
     public function isNew(): bool
     {
-        return $this->status === Status::NEW;
+        return $this->status === StatusEnum::NEW;
     }
 
     /**
@@ -105,7 +105,7 @@ class Ticket extends Model implements HasMedia
      */
     public function isWorking(): bool
     {
-        return $this->status === Status::WORKING;
+        return $this->status === StatusEnum::WORKING;
     }
 
     /**
@@ -114,7 +114,7 @@ class Ticket extends Model implements HasMedia
      */
     public function isDone(): bool
     {
-        return $this->status === Status::DONE;
+        return $this->status === StatusEnum::DONE;
     }
 
     public function customer(): BelongsTo
