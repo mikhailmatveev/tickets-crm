@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enums\User\Permission;
+use App\Enums\User\PermissionEnum;
 use App\Enums\User\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -57,7 +57,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     {
         Gate::define('viewTelescope', function (?User $user): bool {
             return $user->hasExactRoles(Role::ADMIN) &&
-                $user->hasPermissionTo(Permission::VIEW_TELESCOPE);
+                $user->hasPermissionTo(PermissionEnum::VIEW_TELESCOPE);
         });
     }
 }
