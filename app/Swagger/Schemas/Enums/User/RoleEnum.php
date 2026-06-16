@@ -5,8 +5,8 @@ namespace App\Swagger\Schemas\Enums\User;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Enum.RoleSchema',
+    schema: 'RoleEnum',
     type: 'string',
     enum: ['admin', 'manager']
 )]
-class RoleSchema {}
+class RoleEnum {}

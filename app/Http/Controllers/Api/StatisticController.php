@@ -10,25 +10,9 @@ use App\Http\Requests\StatisticRequest;
 use App\Http\Resources\StatisticResource;
 use App\Models\Ticket;
 use App\Models\User;
-use OpenApi\Attributes as OA;
 
 class StatisticController extends Controller
 {
-    #[OA\Get(
-        path: '/api/tickets/statistics',
-        description: 'Возвращает статистику по тикетам по периодам (день, неделя, месяц)',
-        requestBody: new OA\RequestBody(
-            description: 'Период',
-            content: new OA\JsonContent(
-                ref: '#/components/schemas/Enum.PeriodSchema'
-            )
-        ),
-        tags: ['api'],
-        responses: [
-            new OA\Response(response: 200, description: 'Данные статистики'),
-            new OA\Response(response: 401, description: 'Неавторизован')
-        ]
-    )]
     public function index(StatisticRequest $request): StatisticResource
     {
         // Если period не передан, по умолчанию day

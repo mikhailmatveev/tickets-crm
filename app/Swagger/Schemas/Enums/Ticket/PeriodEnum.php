@@ -5,8 +5,8 @@ namespace App\Swagger\Schemas\Enums\Ticket;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Enum.StatusSchema',
+    schema: 'PeriodEnum',
     type: 'string',
-    enum: ['done', 'new', 'working']
+    enum: ['day', 'month', 'week']
 )]
-class StatusSchema {}
+class PeriodEnum {}

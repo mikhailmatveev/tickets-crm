@@ -2,8 +2,4 @@
 
 namespace App\Http\Controllers;
 
-use OpenApi\Attributes as OA;
-
-#[OA\Info(version: "1.0", title: "Tickets CRM")]
-#[OA\Server(url: 'http://localhost:8000', description: 'Local dev server')]
 abstract class Controller {}

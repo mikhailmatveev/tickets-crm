@@ -5,7 +5,7 @@ namespace App\Swagger\Schemas\Resources;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Resource.MediaResourceSchema',
+    schema: 'MediaResource',
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 101),
         new OA\Property(property: 'name', type: 'string', example: 'invoice.pdf'),
@@ -20,4 +20,4 @@ use OpenApi\Attributes as OA;
     ],
     type: 'object'
 )]
-class MediaResourceSchema {}
+class MediaResource {}
