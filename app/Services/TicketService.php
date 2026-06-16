@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\CreateTicketData;
 use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -12,33 +13,36 @@ class TicketService
 {
     /**
      * Сервисный метод создания новой заявки с использованием транзакции для TicketController::create()
-     * @param array $data Validated данные из реквеста TicketController
+     * @param CreateTicketData $data DTO из реквеста TicketController
      * @return Ticket Новый тикет
      * @throws Throwable
      */
-    public function create(array $data): Ticket
+    public function create(CreateTicketData $data): Ticket
     {
         return DB::transaction(function () use ($data) {
             $customer = Customer::firstOrCreate(
                 [
-                    'email' => $data['email'],
-                    'phone' => $data['phone'],
+                    'email' => $data->email,
+                    'phone' => $data->phone
                 ],
                 [
-                    'name' => $data['name'],
+                    'name' => $data->name
                 ]
             );
 
             $ticket = Ticket::create([
                 'customer_id' => $customer->id,
-                'subject' => $data['subject'],
-                'text' => $data['text'],
-                'status' => 'new',
+                'subject' => $data->subject,
+                'text' => $data->text,
+                'status' => 'new'
             ]);
 
             // Прикрепляем файлы к тикету, если они есть
-            foreach (($data['attachments'] ?? []) as $file) {
-                $ticket->addMedia($file)->toMediaCollection('attachments');
+            foreach ($data->attachments as $file) {
+                $ticket
+                    ->addMedia($file)
+                    ->toMediaCollection('attachments')
+                ;
             }
 
             return $ticket;

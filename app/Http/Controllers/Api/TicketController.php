@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\CreateTicketData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\TicketStoreRequest;
@@ -194,35 +195,10 @@ class TicketController extends Controller
     )]
     public function create(TicketStoreRequest $request)
     {
-        $validated = $request->validated();
-
-        // Ключ для RateLimiter
-        $keyEmail = 'ticket:create:' . md5(
-            $validated['email']
+        // Передача в сервис данных, полученных из DTO
+        $ticket = $this->ticketService->create(
+            CreateTicketData::from($request)
         );
-        // Ключ для RateLimiter
-        $keyPhone = 'ticket:create:' . md5(
-            $validated['phone']
-        );
-
-        // Проверяем лимит
-        if (
-            RateLimiter::tooManyAttempts($keyEmail, 1) ||
-            RateLimiter::tooManyAttempts($keyPhone, 1)
-        ) {
-            return response()->json([
-                'message' => 'Вы уже создавали заявку. Попробуйте через 24 часа.'
-            ], 429);
-        }
-
-        // TicketService
-        $ticket = $this->ticketService->create($validated);
-
-        // Установка лимита на 24 часа
-        $decay = 60 * 60 * 24;
-        // Фиксируем попытку только после успеха (ограничение на сутки)
-        RateLimiter::hit($keyEmail, $decay);
-        RateLimiter::hit($keyPhone, $decay);
 
         return new TicketCreateResource(
             $ticket->load([
