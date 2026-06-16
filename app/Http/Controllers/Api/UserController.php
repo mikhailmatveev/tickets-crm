@@ -24,7 +24,7 @@ class UserController extends Controller
                 response: 200,
                 description: 'Список пользователей',
                 content: new OA\JsonContent(
-                    items: new OA\Items(ref: '#/components/schemas/User')
+                    items: new OA\Items(ref: '#/components/schemas/Model.UserSchema')
                 )
             ),
             new OA\Response(response: 401, description: 'Неавторизован')
@@ -53,7 +53,7 @@ class UserController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'Пользователь успешно создан',
-                content: new OA\JsonContent(ref: '#/components/schemas/User')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.UserSchema')
             ),
             new OA\Response(response: 401, description: 'Неавторизован'),
             new OA\Response(response: 403, description: 'Доступ запрещён'),
@@ -150,7 +150,7 @@ class UserController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Пользователь удалён',
-                content: new OA\JsonContent(ref: '#/components/schemas/User')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.UserSchema')
             ),
             new OA\Response(response: 401, description: 'Неавторизован'),
             new OA\Response(response: 403, description: 'Доступ запрещён'),

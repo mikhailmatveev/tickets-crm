@@ -13,7 +13,6 @@ use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\RateLimiter;
 use OpenApi\Attributes as OA;
 
 class TicketController extends Controller
@@ -37,7 +36,7 @@ class TicketController extends Controller
                 response: 200,
                 description: 'Список тикетов',
                 content: new OA\JsonContent(
-                    items: new OA\Items(ref: '#/components/schemas/Ticket')
+                    items: new OA\Items(ref: '#/components/schemas/Model.TicketSchema')
                 )
             ),
             new OA\Response(response: 401, description: 'Неавторизован')
@@ -73,7 +72,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Данные по тикету',
-                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.TicketSchema')
             ),
             new OA\Response(response: 401, description: 'Неавторизован'),
             new OA\Response(response: 422, description: 'Ошибка валидации')
@@ -104,7 +103,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 201,
                 description: 'Тикет успешно создан',
-                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.TicketSchema')
             ),
 
             new OA\Response(
@@ -235,7 +234,7 @@ class TicketController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Тикет успешно обновлён',
-                content: new OA\JsonContent(ref: '#/components/schemas/Ticket')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.TicketSchema')
             ),
 
             new OA\Response(

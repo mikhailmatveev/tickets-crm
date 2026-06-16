@@ -58,7 +58,7 @@ class AuthController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Данные пользователя',
-                content: new OA\JsonContent(ref: '#/components/schemas/User')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.UserSchema')
             ),
             new OA\Response(response: 401, description: 'Неавторизован')
         ]

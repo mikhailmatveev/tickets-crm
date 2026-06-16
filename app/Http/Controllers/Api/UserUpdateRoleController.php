@@ -39,7 +39,7 @@ class UserUpdateRoleController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'Роль пользователя успешно обновлена',
-                content: new OA\JsonContent(ref: '#/components/schemas/User')
+                content: new OA\JsonContent(ref: '#/components/schemas/Model.UserSchema')
             ),
 
             new OA\Response(
