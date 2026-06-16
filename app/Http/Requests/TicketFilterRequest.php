@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -37,7 +37,7 @@ use Throwable;
         ),
         new OA\Property(
             property: 'status',
-            ref: '#/components/schemas/Status', description: 'Статус тикета',
+            ref: '#/components/schemas/StatusEnum', description: 'Статус тикета',
             type: 'string',
             example: 'working'
         )
@@ -59,7 +59,7 @@ class TicketFilterRequest extends FormRequest
             'status' => [
                 'sometimes',
                 'string',
-                Rule::in(Status::collection())
+                Rule::in(StatusEnum::collection())
             ]
         ];
     }

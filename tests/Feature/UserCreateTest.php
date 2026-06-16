@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Enums\User\Role;
+use App\Enums\User\RoleEnum;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,13 +11,13 @@ class UserCreateTest extends UserTest
 {
     /**
      * Тест проверки привилегий пользователей на создание пользователя
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param int $expectedStatus Какой статус ответа ожидаем
      * @return void
      */
     #[DataProvider('permissionsDataProvider')]
     public function test_create_user_permissions(
-        Role $actingAsRole,
+        RoleEnum $actingAsRole,
         int $expectedStatus
     ): void
     {
@@ -27,14 +27,14 @@ class UserCreateTest extends UserTest
         // Ожидаем получить статус ответа тот же, что и в провайдере данных
         $response->assertStatus($expectedStatus);
         // Ожидаем, что пользователь будет создан
-        if ($actingAsRole === Role::ADMIN) {
+        if ($actingAsRole === RoleEnum::ADMIN) {
             $this->assertDatabaseHas('users', [
                 'email' => $payload['email'],
                 'name' => $payload['name']
             ]);
         }
         // Ожидаем, что пользователь не создастся
-        if ($actingAsRole === Role::MANAGER) {
+        if ($actingAsRole === RoleEnum::MANAGER) {
             $this->assertDatabaseMissing('users', [
                 'email' => $payload['email']
             ]);
@@ -43,7 +43,7 @@ class UserCreateTest extends UserTest
 
     /**
      * Тест на валидацию полей при создании пользователя
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param array $overrides Массив полей, которые хотим переопределить
      * @param int $expectedStatus Какой статус ответа ожидаем
      * @param array $expectedValidationErrors Список ошибок валидации, которые ожидаем получить
@@ -51,7 +51,7 @@ class UserCreateTest extends UserTest
      */
     #[DataProvider('validationDataProvider')]
     public function test_create_user_validation(
-        Role $actingAsRole,
+        RoleEnum $actingAsRole,
         array $overrides,
         int $expectedStatus,
         array $expectedValidationErrors
@@ -77,7 +77,7 @@ class UserCreateTest extends UserTest
         User::factory()->create(['email' => 'duplicate@example.com']);
         // Выполняем запрос с переданной ролью
         $response = $this->doActingAsRoleRequest(
-            Role::ADMIN,
+            RoleEnum::ADMIN,
             $this->validPayload(['email' => 'duplicate@example.com'])
         );
         // 422-й ответ
@@ -90,8 +90,8 @@ class UserCreateTest extends UserTest
     public static function permissionsDataProvider(): array
     {
         return [
-            'admin can create user' => [Role::ADMIN, 201],
-            'manager cannot create user' => [Role::MANAGER, 403]
+            'admin can create user' => [RoleEnum::ADMIN, 201],
+            'manager cannot create user' => [RoleEnum::MANAGER, 403]
         ];
     }
 
@@ -161,7 +161,7 @@ class UserCreateTest extends UserTest
     protected static function defaultValidationDataProvider(array $overrides = []): array
     {
         return array_merge([
-            'actingAsRole' => Role::ADMIN,
+            'actingAsRole' => RoleEnum::ADMIN,
             'expectedStatus' => 422,
             'expectedValidationErrors' => []
         ], $overrides);
@@ -175,7 +175,7 @@ class UserCreateTest extends UserTest
     protected static function defaultProviderData(array $overrides = []): array
     {
         return array_merge([
-            'actingAsRole' => Role::ADMIN,
+            'actingAsRole' => RoleEnum::ADMIN,
             'overrides' => [],
             'expectedStatus' => 422,
             'expectedValidationErrors' => []
@@ -184,11 +184,11 @@ class UserCreateTest extends UserTest
 
     /**
      * Хелпер-матод для выполнения запроса под заданной ролью
-     * @param Role $actingAsRole Под какой ролью пользователя авторизуемся
+     * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param array $payload Массив полей для передачи в запрос
      * @return TestResponse
      */
-    protected function doActingAsRoleRequest(Role $actingAsRole, array $payload): TestResponse
+    protected function doActingAsRoleRequest(RoleEnum $actingAsRole, array $payload): TestResponse
     {
         // Логинимся под требуемой ролью
         $this->actingAsRole($actingAsRole);
@@ -207,7 +207,7 @@ class UserCreateTest extends UserTest
             'name' => 'Test Manager',
             'email' => 'test.manager@example.com',
             'password' => 'secret123',
-            'role' => Role::MANAGER
+            'role' => RoleEnum::MANAGER
         ], $overrides);
     }
 }

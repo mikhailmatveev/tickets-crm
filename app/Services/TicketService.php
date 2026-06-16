@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class TicketService
      */
     public function create(array $data): Ticket
     {
-        $ticket = DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             $customer = Customer::firstOrCreate(
                 [
                     'email' => $data['email'],
@@ -29,20 +29,20 @@ class TicketService
                 ]
             );
 
-            return Ticket::create([
+            $ticket = Ticket::create([
                 'customer_id' => $customer->id,
                 'subject' => $data['subject'],
                 'text' => $data['text'],
                 'status' => 'new',
             ]);
+
+            // Прикрепляем файлы к тикету, если они есть
+            foreach (($data['attachments'] ?? []) as $file) {
+                $ticket->addMedia($file)->toMediaCollection('attachments');
+            }
+
+            return $ticket;
         });
-
-        // Прикрепляем файлы к тикету, если они есть
-        foreach (($data['attachments'] ?? []) as $file) {
-            $ticket->addMedia($file)->toMediaCollection('attachments');
-        }
-
-        return $ticket;
     }
 
     /**
@@ -58,11 +58,11 @@ class TicketService
 
             $ticket = Ticket::findOrFail($id);
 
-            $status = Status::from($data['status']);
+            $status = StatusEnum::from($data['status']);
             $ticket->changeStatus($status);
             $ticket->save();
 
-            if ($status === Status::DONE) {
+            if ($status === StatusEnum::DONE) {
                 $ticket->addReply($data['reply_text'], auth()->id());
             }
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('text');
             $table->string('status')
                 ->default(
-                    Status::NEW
+                    StatusEnum::NEW
                 );
             $table->timestamp('manager_replied_at')
                 ->nullable();

@@ -6,11 +6,11 @@ use Illuminate\Support\Collection;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Status',
+    schema: 'StatusEnum',
     type: 'string',
     enum: ['done', 'new', 'working']
 )]
-enum Status: string
+enum StatusEnum: string
 {
     case DONE = 'done';
     case NEW = 'new';
@@ -18,6 +18,6 @@ enum Status: string
 
     public static function collection(): Collection
     {
-        return collect(self::cases())->map(fn (Status $status) => $status->value);
+        return collect(self::cases())->map(fn (StatusEnum $status) => $status->value);
     }
 }

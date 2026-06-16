@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Ticket\Period;
+use App\Enums\Ticket\PeriodEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(
             property: 'period',
-            ref: '#/components/schemas/Period',
+            ref: '#/components/schemas/PeriodEnum',
             type: 'string',
             nullable: true
         )
@@ -33,9 +33,9 @@ class StatisticRequest extends FormRequest
                 'nullable',
                 'string',
                 Rule::in([
-                    Period::DAY,
-                    Period::WEEK,
-                    Period::MONTH
+                    PeriodEnum::DAY,
+                    PeriodEnum::WEEK,
+                    PeriodEnum::MONTH
                 ])
             ]
         ];
