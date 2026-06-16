@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 use Spatie\Permission\Models\Role;
 
 #[OA\Schema(
-    schema: 'Model.UserSchema',
+    schema: 'User',
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'string', maxLength: 255, example: 'Иван'),
@@ -22,4 +22,4 @@ use Spatie\Permission\Models\Role;
     ],
     type: 'object'
 )]
-class UserSchema {}
+class User {}

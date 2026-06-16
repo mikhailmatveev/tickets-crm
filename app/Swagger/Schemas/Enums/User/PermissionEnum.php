@@ -5,7 +5,7 @@ namespace App\Swagger\Schemas\Enums\User;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Enum.PermissionSchema',
+    schema: 'PermissionEnum',
     type: 'string',
     enum: [
         'change_ticket_status',
@@ -21,4 +21,4 @@ use OpenApi\Attributes as OA;
         'view_tickets'
     ]
 )]
-class PermissionSchema {}
+class PermissionEnum {}

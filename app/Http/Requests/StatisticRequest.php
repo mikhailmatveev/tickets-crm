@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(
             property: 'period',
-            ref: '#/components/schemas/Enum.PeriodSchema',
+            ref: '#/components/schemas/PeriodEnum',
             type: 'string',
             nullable: true
         )

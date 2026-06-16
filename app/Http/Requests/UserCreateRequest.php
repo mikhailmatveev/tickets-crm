@@ -36,7 +36,7 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'role',
-            ref: '#/components/schemas/Enum.RoleSchema',
+            ref: '#/components/schemas/RoleEnum',
             description: 'Роль пользователя'
         )
     ]
