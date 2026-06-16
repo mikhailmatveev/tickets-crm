@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\Ticket\PeriodEnum;
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatisticRequest;
@@ -34,7 +34,7 @@ class StatisticController extends Controller
         // Если period не передан, по умолчанию day
         $period = PeriodEnum::tryFrom($request->input('period', PeriodEnum::DAY->value)) ?? PeriodEnum::DAY;
         // Завершенные тикеты
-        $ticketsQuery = Ticket::where('status', Status::DONE);
+        $ticketsQuery = Ticket::where('status', StatusEnum::DONE);
         // Применяем скоуп по периоду
         switch ($period) {
             case PeriodEnum::DAY: $ticketsQuery->scopes('repliedThisDay'); break;

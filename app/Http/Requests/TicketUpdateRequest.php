@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use OpenApi\Attributes as OA;
@@ -41,7 +41,7 @@ class TicketUpdateRequest extends FormRequest
             'status' => [
                 'required',
                 'string',
-                Rule::in(Status::collection())
+                Rule::in(StatusEnum::collection())
             ],
             'reply_text' => [
                 'required_if:status,done',

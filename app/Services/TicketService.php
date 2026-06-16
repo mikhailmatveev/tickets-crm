@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\DB;
@@ -58,11 +58,11 @@ class TicketService
 
             $ticket = Ticket::findOrFail($id);
 
-            $status = Status::from($data['status']);
+            $status = StatusEnum::from($data['status']);
             $ticket->changeStatus($status);
             $ticket->save();
 
-            if ($status === Status::DONE) {
+            if ($status === StatusEnum::DONE) {
                 $ticket->addReply($data['reply_text'], auth()->id());
             }
 

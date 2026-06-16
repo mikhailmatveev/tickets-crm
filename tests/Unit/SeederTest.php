@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\Role;
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -60,7 +60,7 @@ class SeederTest extends TestCase
             Ticket::query()
                 ->where(
                     'status',
-                    Status::DONE
+                    StatusEnum::DONE
                 )
                 ->doesntHave('replies')
                 ->count()

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\Role;
 use App\Models\Ticket;
 use App\Models\TicketReply;
@@ -26,7 +26,7 @@ class TicketReplySeeder extends Seeder
         }
 
         Ticket::query()
-            ->where('status', Status::DONE)
+            ->where('status', StatusEnum::DONE)
             ->each(function (Ticket $ticket) use ($managers) {
                 // Отвечать на тикет будет случайный менеджер
                 $manager = $managers->random();

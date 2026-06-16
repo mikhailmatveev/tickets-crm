@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Enums\Ticket\Status;
+use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\Role;
 use Carbon\Carbon;
 use Illuminate\Testing\TestResponse;
@@ -84,7 +84,7 @@ class TicketFilterTest extends TicketTest
                         'email' => 'user@example.com',
                         'phone' => '+799912345678',
                         'date' => Carbon::now()->toDateString(),
-                        'status' => Status::DONE
+                        'status' => StatusEnum::DONE
                     ]
                 ],
                 'expectedStatus' => 200
@@ -133,7 +133,7 @@ class TicketFilterTest extends TicketTest
                 'email' => 'user@example.com',
                 'phone' => '+799912345678',
                 'date' => Carbon::now()->toDateString(),
-                'status' => Status::DONE
+                'status' => StatusEnum::DONE
             ]
         ], $overrides);
     }
