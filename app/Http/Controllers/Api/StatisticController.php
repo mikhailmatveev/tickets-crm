@@ -20,7 +20,7 @@ class StatisticController extends Controller
         requestBody: new OA\RequestBody(
             description: 'Период',
             content: new OA\JsonContent(
-                ref: '#/components/schemas/PeriodEnum'
+                ref: '#/components/schemas/Enum.PeriodSchema'
             )
         ),
         tags: ['api'],

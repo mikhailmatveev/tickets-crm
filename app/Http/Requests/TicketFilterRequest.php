@@ -37,7 +37,7 @@ use Throwable;
         ),
         new OA\Property(
             property: 'status',
-            ref: '#/components/schemas/StatusEnum', description: 'Статус тикета',
+            ref: '#/components/schemas/Enum.StatusSchema', description: 'Статус тикета',
             type: 'string',
             example: 'working'
         )

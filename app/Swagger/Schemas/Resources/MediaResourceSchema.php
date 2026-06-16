@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Swagger\Schemas;
+namespace App\Swagger\Schemas\Resources;
 
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'MediaResourceSchema',
+    schema: 'Resource.MediaResourceSchema',
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 101),
         new OA\Property(property: 'name', type: 'string', example: 'invoice.pdf'),
