@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RolesResource extends JsonResource
+class RoleResource extends JsonResource
 {
     public function toArray($request): array
     {

@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\RolesResource;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Resources\RoleResourceCollection;
 use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(): RoleResourceCollection
     {
-        return RolesResource::collection(Role::all());
+        return RoleResourceCollection::make(Role::all());
     }
 }
