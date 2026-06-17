@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\DTO\CreateTicketData;
+use App\DTO\TicketCreateData;
 use App\DTO\TicketFilterData;
 use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
@@ -15,11 +15,11 @@ class TicketService
 {
     /**
      * Сервисный метод создания новой заявки с использованием транзакции для TicketController::create()
-     * @param CreateTicketData $data DTO из реквеста TicketController
+     * @param TicketCreateData $data DTO из реквеста TicketController
      * @return Ticket Новый тикет
      * @throws Throwable
      */
-    public function create(CreateTicketData $data): Ticket
+    public function create(TicketCreateData $data): Ticket
     {
         return DB::transaction(function () use ($data) {
             $customer = Customer::firstOrCreate(
