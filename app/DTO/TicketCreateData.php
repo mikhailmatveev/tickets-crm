@@ -5,7 +5,7 @@ namespace App\DTO;
 use Illuminate\Http\UploadedFile;
 use Spatie\LaravelData\Data;
 
-class CreateTicketData extends Data
+class TicketCreateData extends Data
 {
     public function __construct(
         public readonly string $name,

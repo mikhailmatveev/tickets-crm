@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\DTO\CreateTicketData;
+use App\DTO\TicketCreateData;
 use App\DTO\TicketFilterData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketFilterRequest;
@@ -41,7 +41,7 @@ class TicketController extends Controller
     {
         // Передача в сервис данных, полученных из DTO
         $ticket = $this->ticketService->create(
-            CreateTicketData::from($request)
+            TicketCreateData::from($request)
         );
 
         return new TicketCreateResource(

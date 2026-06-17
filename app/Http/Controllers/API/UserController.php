@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\API;
 
+use App\DTO\UserCreateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserDeleteRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
+    public function __construct(
+        protected UserService $userService
+    ) {}
+
     public function index(): AnonymousResourceCollection
     {
         return UserResource::collection(User::all());
@@ -26,14 +31,10 @@ class UserController extends Controller
 
     public function create(UserCreateRequest $request): JsonResponse
     {
-        $validated = $request->validated();
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-            'email_verified_at' => Carbon::now()
-        ]);
-        $user->assignRole($validated['role']);
+        $user = $this->userService->create(
+            UserCreateData::from($request)
+        );
+
         return new UserResource($user)
             ->response()
             ->setStatusCode(201)
