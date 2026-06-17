@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\DTO\CreateTicketData;
+use App\DTO\TicketFilterData;
 use App\Enums\Ticket\StatusEnum;
 use App\Models\Customer;
 use App\Models\Ticket;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -72,5 +74,21 @@ class TicketService
 
             return $ticket->load(['customer', 'replies', 'media']);
         });
+    }
+
+    /**
+     * Возвращает список тикетов вместе с привязкой к клиенту по применённому фильтру
+     * @param TicketFilterData $data DTO с фильтром по тикетам
+     * @return Collection<int, Ticket>
+     */
+    public function getFilteredTickets(TicketFilterData $data): Collection
+    {
+        return Ticket::query()
+            ->with('customer')
+            ->when($data->email, fn($q, $email) => $q->byEmail($email))
+            ->when($data->phone, fn($q, $phone) => $q->byPhone($phone))
+            ->when($data->date, fn($q, $date) => $q->byDate($date))
+            ->when($data->status, fn($q, $status) => $q->byStatus($status))
+            ->get();
     }
 }

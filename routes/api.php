@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\RolesController;
-use App\Http\Controllers\Api\StatisticController;
-use App\Http\Controllers\Api\TicketController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\UserUpdateRoleController;
+use App\Http\Controllers\API\RolesController;
+use App\Http\Controllers\API\StatisticController;
+use App\Http\Controllers\API\TicketController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\UserUpdateRoleController;
 use App\Http\Middleware\TicketRateLimit;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;

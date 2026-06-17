@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\WidgetController;
+use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\WidgetController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
