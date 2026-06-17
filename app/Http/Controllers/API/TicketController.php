@@ -14,7 +14,6 @@ use App\Http\Resources\TicketResourceCollection;
 use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TicketController extends Controller
 {
