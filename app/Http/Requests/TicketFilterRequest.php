@@ -48,6 +48,15 @@ class TicketFilterRequest extends FormRequest
     }
 
     /**
+     * Получение статуса из реквеста
+     * @return ?StatusEnum
+     */
+    public function status(): ?StatusEnum
+    {
+        return StatusEnum::tryFrom($this->input('status'));
+    }
+
+    /**
      * Дополнительная обработка поля с датой с использованием Carbon
      * @return void
      */

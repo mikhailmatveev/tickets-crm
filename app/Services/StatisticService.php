@@ -20,7 +20,7 @@ class StatisticService
     public function getManagerStatistics(PeriodEnum $period): Collection
     {
         // Завершенные тикеты
-        $ticketsQuery = Ticket::where('status', StatusEnum::DONE);
+        $ticketsQuery = Ticket::query()->byStatus(StatusEnum::DONE);
         // Применяем скоуп по периоду
         switch ($period) {
             case PeriodEnum::DAY: $ticketsQuery->scopes('repliedThisDay'); break;

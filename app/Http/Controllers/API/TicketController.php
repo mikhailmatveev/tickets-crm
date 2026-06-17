@@ -28,7 +28,7 @@ class TicketController extends Controller
                 ->when($request->filled('email'), fn($q) => $q->byEmail($request->email))
                 ->when($request->filled('phone'), fn($q) => $q->byPhone($request->phone))
                 ->when($request->filled('date'), fn($q) => $q->byDate($request->date))
-                ->when($request->filled('status'), fn($q) => $q->byStatus($request->status))
+                ->when($request->status(), fn($q, $status) => $q->byStatus($status))
                 ->get()
         );
     }

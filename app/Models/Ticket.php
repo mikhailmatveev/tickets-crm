@@ -149,10 +149,10 @@ class Ticket extends Model implements HasMedia
     /**
      * Фильтр по статусу тикета
      * @param Builder $query Билдер
-     * @param string $status Статус
+     * @param StatusEnum $status Статус
      * @return Builder Билдер
      */
-    public function scopeByStatus(Builder $query, string $status): Builder
+    public function scopeByStatus(Builder $query, StatusEnum $status): Builder
     {
         return $query->where('status', $status);
     }
