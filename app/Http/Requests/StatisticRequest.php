@@ -34,4 +34,13 @@ class StatisticRequest extends FormRequest
             'period.in' => 'Параметр period должен быть day, week или month',
         ];
     }
+
+    /**
+     * Вычисляем период из реквеста (по умолчанию - день)
+     * @return PeriodEnum
+     */
+    public function period(): PeriodEnum
+    {
+        return PeriodEnum::tryFrom($this->input('period')) ?? PeriodEnum::DAY;
+    }
 }

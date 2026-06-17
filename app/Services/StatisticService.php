@@ -1,24 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Services;
 
 use App\Enums\Ticket\PeriodEnum;
 use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\RoleEnum;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StatisticRequest;
-use App\Http\Resources\StatisticResource;
 use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
-class StatisticController extends Controller
+class StatisticService
 {
-    public function index(StatisticRequest $request): StatisticResource
+    /**
+     * Возвращает статистику по тикетам с разбивкой по каждому менеджеру и его кол-ву обработанных тикетов
+     * с сортировкой по убыванию
+     * @param PeriodEnum $period Период
+     * @return Collection
+     */
+    public function getManagerStatistics(PeriodEnum $period): Collection
     {
-        // Если period не передан, по умолчанию day
-        $period = PeriodEnum::tryFrom($request->input('period', PeriodEnum::DAY->value)) ?? PeriodEnum::DAY;
         // Завершенные тикеты
-        $ticketsQuery = Ticket::where('status', StatusEnum::DONE);
+        $ticketsQuery = Ticket::query()->byStatus(StatusEnum::DONE);
         // Применяем скоуп по периоду
         switch ($period) {
             case PeriodEnum::DAY: $ticketsQuery->scopes('repliedThisDay'); break;
@@ -27,7 +29,7 @@ class StatisticController extends Controller
         };
         // Пользователи, которые ответили на тикеты
         // Выше всех в таблице отображается пользователь, ответивший на наибольшее кол-во тикетов
-        $usersWithDoneTickets = User::whereHas(
+        return User::whereHas(
             'roles',
             function ($query) {
                 $query->where('name', RoleEnum::MANAGER);
@@ -40,18 +42,7 @@ class StatisticController extends Controller
             ])
             ->get()
             ->sortByDesc('tickets_done')
+            ->values()
         ;
-        // Итоговая статистика
-        $stats = $usersWithDoneTickets
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'role' => $user->roles->first() ?->name ?? '',
-                    'tickets_done' => $user->tickets_done,
-                ];
-            })
-            ->values();
-        return new StatisticResource($stats);
     }
 }
