@@ -2,56 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enums\Ticket\PeriodEnum;
-use App\Enums\Ticket\StatusEnum;
-use App\Enums\User\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatisticRequest;
-use App\Http\Resources\StatisticResource;
-use App\Models\Ticket;
-use App\Models\User;
+use App\Http\Resources\StatisticResourceCollection;
+use App\Services\StatisticService;
 
 class StatisticController extends Controller
 {
-    public function index(StatisticRequest $request): StatisticResource
+    public function __construct(
+        private readonly StatisticService $statisticService
+    ) {}
+
+    public function index(StatisticRequest $request): StatisticResourceCollection
     {
-        // Если period не передан, по умолчанию day
-        $period = PeriodEnum::tryFrom($request->input('period', PeriodEnum::DAY->value)) ?? PeriodEnum::DAY;
-        // Завершенные тикеты
-        $ticketsQuery = Ticket::where('status', StatusEnum::DONE);
-        // Применяем скоуп по периоду
-        switch ($period) {
-            case PeriodEnum::DAY: $ticketsQuery->scopes('repliedThisDay'); break;
-            case PeriodEnum::WEEK: $ticketsQuery->scopes('repliedThisWeek'); break;
-            case PeriodEnum::MONTH: $ticketsQuery->scopes('repliedThisMonth'); break;
-        };
-        // Пользователи, которые ответили на тикеты
-        // Выше всех в таблице отображается пользователь, ответивший на наибольшее кол-во тикетов
-        $usersWithDoneTickets = User::whereHas(
-            'roles',
-            function ($query) {
-                $query->where('name', RoleEnum::MANAGER);
-            })
-            ->withCount([
-                'ticketReplies as tickets_done' => function ($query) use ($ticketsQuery) {
-                    // фильтруем только реплаи к нужным тикетам
-                    $query->whereIn('ticket_id', $ticketsQuery->pluck('id'));
-                }
-            ])
-            ->get()
-            ->sortByDesc('tickets_done')
-        ;
-        // Итоговая статистика
-        $stats = $usersWithDoneTickets
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'role' => $user->roles->first() ?->name ?? '',
-                    'tickets_done' => $user->tickets_done,
-                ];
-            })
-            ->values();
-        return new StatisticResource($stats);
+        return StatisticResourceCollection::make(
+            $this->statisticService->getManagerStatistics($request->period())
+        );
     }
 }
