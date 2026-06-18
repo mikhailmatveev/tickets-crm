@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\DTO\TicketCreateData;
 use App\DTO\TicketFilterData;
+use App\DTO\TicketUpdateData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\TicketStoreRequest;
@@ -56,7 +57,7 @@ class TicketController extends Controller
     {
         $ticket = $this->ticketService->update(
             $id,
-            $request->validated()
+            TicketUpdateData::from($request)
         );
 
         return new TicketResource($ticket);
