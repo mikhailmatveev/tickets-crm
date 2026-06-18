@@ -8,8 +8,14 @@
   </hgroup>
   <hr>
   <div v-if="details.customer">
-    <article>E-mail: {{ details.customer.email }}</article>
-    <article>Телефон: {{ details.customer.phone }}</article>
+    <article>
+      <i class="fa fa-envelope" />
+      {{ details.customer.email }}
+    </article>
+    <article>
+      <i class="fa fa-phone" />
+      {{ details.customer.phone }}
+    </article>
   </div>
   <h3>Описание проблемы</h3>
   <blockquote v-if="details.customer">
