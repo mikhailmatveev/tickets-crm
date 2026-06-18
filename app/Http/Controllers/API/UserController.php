@@ -7,11 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserDeleteRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
@@ -19,9 +18,9 @@ class UserController extends Controller
         protected UserService $userService
     ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(): UserResourceCollection
     {
-        return UserResource::collection(
+        return UserResourceCollection::make(
             User::with('roles')
                 ->get()
         );
