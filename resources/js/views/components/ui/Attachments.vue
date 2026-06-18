@@ -17,6 +17,7 @@
           :key="file.id"
         >
           <td>
+            <i class="fa fa-paperclip" />
             <a
               :href="file.url"
               target="_blank"
