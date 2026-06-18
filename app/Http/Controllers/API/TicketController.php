@@ -9,9 +9,7 @@ use App\Http\Requests\TicketFilterRequest;
 use App\Http\Requests\TicketStoreRequest;
 use App\Http\Requests\TicketUpdateRequest;
 use App\Http\Resources\TicketResource;
-use App\Http\Resources\TicketCreateResource;
 use App\Http\Resources\TicketResourceCollection;
-use App\Http\Resources\TicketUpdateResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
 
@@ -44,7 +42,7 @@ class TicketController extends Controller
             TicketCreateData::from($request)
         );
 
-        return new TicketCreateResource(
+        return new TicketResource(
             $ticket->load([
                 'customer',
                 'replies'
@@ -54,13 +52,13 @@ class TicketController extends Controller
             ->setStatusCode(201);
     }
 
-    public function update(TicketUpdateRequest $request, int $id): TicketUpdateResource
+    public function update(TicketUpdateRequest $request, int $id): TicketResource
     {
         $ticket = $this->ticketService->update(
             $id,
             $request->validated()
         );
 
-        return new TicketUpdateResource($ticket);
+        return new TicketResource($ticket);
     }
 }
