@@ -9,8 +9,14 @@
 </hgroup>
 <hr>
 @if($ticket->customer)
-<article>E-mail: {{ $ticket->customer->email }}</article>
-<article>Телефон: {{ $ticket->customer->phone }}</article>
+<article>
+    <i class="fa fa-envelope"></i>
+    {{ $ticket->customer->email }}
+</article>
+<article>
+    <i class="fa fa-phone"></i>
+    {{ $ticket->customer->phone }}
+</article>
 <h3>Описание проблемы</h3>
 <blockquote>
     {{ $ticket->text }}

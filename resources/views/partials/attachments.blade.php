@@ -14,6 +14,7 @@
             @foreach($attachments as $file)
             <tr>
                 <td>
+                    <i class="fa fa-paperclip"></i>
                     <a href="{{ $file->getUrl() }}" target="_blank">{{ $file->name }}</a>
                 </td>
                 <td>{{ $file->mime_type }}</td>
