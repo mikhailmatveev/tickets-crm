@@ -48,6 +48,7 @@
         :disabled="fetchingDelete"
         @click="deleteUser(user.id)"
       >
+        <i class="fa fa-trash" />
         Удалить
       </button>
     </fieldset>

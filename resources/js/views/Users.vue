@@ -4,6 +4,7 @@
     type="button"
     @click="openModal"
   >
+    <i class="fa fa-user-plus" />
     Добавить пользователя
   </button>
   <user-item
