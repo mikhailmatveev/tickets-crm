@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
             'email.max' => 'Поле email не должно превышать 255 символов',
             'password.required' => 'Поле password обязательно для заполнения',
             'password.string' => 'Пароль должен быть строкой',
-            'password.min' => 'Пароль должен быть не меньше 8 символов'
+            'password.min' => 'Пароль должен быть не меньше 6 символов'
         ];
     }
 }

@@ -117,7 +117,7 @@ export default {
       if (this.details.status === 'done') {
         return {
           status: this.details.status,
-          reply_text: this.replyText
+          replyText: this.replyText
         }
       }
       return {

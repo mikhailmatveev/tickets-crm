@@ -164,7 +164,7 @@ class Ticket
 
     #[OA\Put(
         path: '/api/ticket/{id}',
-        description: 'Обновляет статус тикета и создаёт ответ (reply). Поле reply_text обязательно только при статусе done и запрещено для остальных статусов',
+        description: 'Обновляет статус тикета и создаёт ответ (reply). Поле replyText обязательно только при статусе done и запрещено для остальных статусов',
         summary: 'Обновить тикет и добавить ответ',
         requestBody: new OA\RequestBody(
             required: true,
@@ -219,13 +219,13 @@ class Ticket
                                     ]
                                 ),
                                 new OA\Property(
-                                    property: 'reply_text',
+                                    property: 'replyText',
                                     type: 'array',
                                     items: new OA\Items(type: 'string'),
                                     example: [
                                         'Поле ответа обязательно при завершении тикета',
-                                        'Поле reply_text должно быть строкой',
-                                        'Поле reply_text не должно превышать 2000 символов'
+                                        'Поле replyText должно быть строкой',
+                                        'Поле replyText не должно превышать 2000 символов'
                                     ]
                                 ),
                             ],

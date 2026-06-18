@@ -37,7 +37,7 @@ class StatisticService
             ->withCount([
                 'ticketReplies as tickets_done' => function ($query) use ($ticketsQuery) {
                     // фильтруем только реплаи к нужным тикетам
-                    $query->whereIn('ticket_id', $ticketsQuery->pluck('id'));
+                    $query->whereIn('ticket_id', $ticketsQuery->select('id'));
                 }
             ])
             ->get()
