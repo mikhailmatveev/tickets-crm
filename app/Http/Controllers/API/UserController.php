@@ -24,11 +24,6 @@ class UserController extends Controller
         return UserResource::collection(User::all());
     }
 
-    public function show(Request $request): UserResource
-    {
-        return new UserResource($request->id);
-    }
-
     public function create(UserCreateRequest $request): JsonResponse
     {
         $user = $this->userService->create(
