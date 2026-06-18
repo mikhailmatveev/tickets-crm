@@ -21,7 +21,10 @@ class UserController extends Controller
 
     public function index(): AnonymousResourceCollection
     {
-        return UserResource::collection(User::all());
+        return UserResource::collection(
+            User::with('roles')
+                ->get()
+        );
     }
 
     public function create(UserCreateRequest $request): JsonResponse
