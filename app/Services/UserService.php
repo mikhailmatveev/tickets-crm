@@ -21,6 +21,8 @@ class UserService
             ]);
 
             $user->syncRoles($data->role);
+            // TODO: Добавить проверку прав (permissions), если пользователь был добавлен через интерфейс
+            // TODO: Так же добавить подтверждение email по ссылке
 
             return $user;
         });

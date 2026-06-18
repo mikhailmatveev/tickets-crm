@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Ticket\StatusEnum;
 use App\Enums\User\PermissionEnum;
+use App\Enums\User\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +16,11 @@ class TicketUpdateRequest extends FormRequest
             return false;
         }
         $user = auth()->user();
-        return $user?->can(PermissionEnum::CHANGE_TICKET_STATUS) ?? false;
+        // Временно сделал такую проверку, чтобы не падало в 403 ошибку
+        return ($user?->hasRole(RoleEnum::ADMIN) || $user?->hasRole(RoleEnum::MANAGER))
+            ?? false
+        ;
+        // TODO: Добавить проверку прав (permissions), если пользователь был добавлен через интерфейс
     }
 
     public function rules(): array
