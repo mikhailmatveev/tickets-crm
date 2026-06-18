@@ -120,7 +120,6 @@ export default {
         const response = await http.updateUserRole(this.user.id,
           { role_id: roleId }
         )
-        console.log(response.data)
         return response
       } catch (e) {
         console.error(e)
