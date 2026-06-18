@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Ticket\StatusEnum;
+use App\Enums\User\PermissionEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,7 +11,11 @@ class TicketUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        if (!auth()->check()) {
+            return false;
+        }
+        $user = auth()->user();
+        return $user?->can(PermissionEnum::CHANGE_TICKET_STATUS) ?? false;
     }
 
     public function rules(): array
