@@ -26,7 +26,7 @@ class TicketUpdateRequest extends FormRequest
                 'string',
                 Rule::in(StatusEnum::collection())
             ],
-            'reply_text' => [
+            'replyText' => [
                 'required_if:status,done',
                 'prohibited_unless:status,done',
                 'string',
@@ -41,9 +41,9 @@ class TicketUpdateRequest extends FormRequest
             'status.required' => 'Поле status является обязательным',
             'status.string' => 'Поле status должно быть строкой',
             'status.in' => 'Поле status может принимать только одно из значений new, working или done',
-            'reply_text.required_if' => 'Поле ответа обязательно при завершении тикета',
-            'reply_text.string' => 'Поле reply_text должно быть строкой',
-            'reply_text.max' => 'Поле reply_text не должно превышать 2000 символов'
+            'replyText.required_if' => 'Поле ответа обязательно при завершении тикета',
+            'replyText.string' => 'Поле replyText должно быть строкой',
+            'replyText.max' => 'Поле replyText не должно превышать 2000 символов'
         ];
     }
 }

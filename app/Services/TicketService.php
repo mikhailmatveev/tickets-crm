@@ -69,7 +69,7 @@ class TicketService
             $ticket->save();
 
             if ($data->status === StatusEnum::DONE) {
-                $ticket->addReply($data->reply_text, auth()->id());
+                $ticket->addReply($data->replyText, auth()->id());
             }
 
             return $ticket->load(['customer', 'replies', 'media']);
