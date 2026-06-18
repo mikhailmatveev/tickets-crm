@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
             example: 'done'
         ),
         new OA\Property(
-            property: 'reply_text',
+            property: 'replyText',
             description: "Текст ответа. Обязателен только при status === 'done'. Запрещён для других статусов",
             type: 'string',
             maxLength: 2000,
