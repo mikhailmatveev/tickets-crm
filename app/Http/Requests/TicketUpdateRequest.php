@@ -11,7 +11,7 @@ class TicketUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->user()->can(PermissionEnum::REPLY_ON_TICKET->value);
+        return auth()->user()->can(PermissionEnum::CHANGE_TICKET_STATUS->value);
     }
 
     public function rules(): array

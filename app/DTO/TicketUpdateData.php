@@ -9,6 +9,6 @@ class TicketUpdateData extends Data
 {
     public function __construct(
         public readonly StatusEnum $status,
-        public readonly string $replyText
+        public readonly ?string $replyText = null
     ) {}
 }
