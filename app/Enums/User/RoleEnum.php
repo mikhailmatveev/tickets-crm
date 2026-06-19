@@ -25,6 +25,7 @@ enum RoleEnum: string
         return match($this) {
             self::ADMIN => Permission::all()->pluck('name')->toArray(),
             self::MANAGER => [
+                PermissionEnum::CHANGE_TICKET_STATUS->value,
                 PermissionEnum::REPLY_ON_TICKET->value,
                 PermissionEnum::VIEW_TICKET_DETAILS->value,
                 PermissionEnum::VIEW_TICKET_STATS->value,
