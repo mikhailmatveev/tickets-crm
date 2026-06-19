@@ -11,11 +11,7 @@ class UserCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        if (!auth()->check()) {
-            return false;
-        }
-        $user = auth()->user();
-        return $user?->hasRole(RoleEnum::ADMIN) && $user?->can(PermissionEnum::CREATE_USER);
+        return auth()->user()->can(PermissionEnum::CREATE_USER->value);
     }
 
     public function rules(): array
