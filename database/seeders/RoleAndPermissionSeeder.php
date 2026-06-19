@@ -29,15 +29,8 @@ class RoleAndPermissionSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => RoleEnum::ADMIN]);
         $manager = Role::firstOrCreate(['name' => RoleEnum::MANAGER]);
 
-        // Админу назначаем полный доступ
-        $admin->givePermissionTo(Permission::all());
-
-        // Менеджеру назначаем только просмотр тикетов и статистики
-        $manager->givePermissionTo([
-            PermissionEnum::REPLY_ON_TICKET,
-            PermissionEnum::VIEW_TICKET_DETAILS,
-            PermissionEnum::VIEW_TICKET_STATS,
-            PermissionEnum::VIEW_TICKETS
-        ]);
+        // Права
+        $admin->syncPermissions(RoleEnum::ADMIN->permissions());
+        $manager->syncPermissions(RoleEnum::MANAGER->permissions());
     }
 }
