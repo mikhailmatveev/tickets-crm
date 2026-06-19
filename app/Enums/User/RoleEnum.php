@@ -3,6 +3,7 @@
 namespace App\Enums\User;
 
 use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Permission;
 
 enum RoleEnum: string
 {
@@ -19,11 +20,16 @@ enum RoleEnum: string
         return 'role:' . $this->value;
     }
 
-//    public static function values(self ...$roles): array
-//    {
-//        return array_map(
-//            static fn (self $role) => $role->value,
-//            $roles
-//        );
-//    }
+    public function permissions(): array
+    {
+        return match($this) {
+            self::ADMIN => Permission::all()->pluck('name')->toArray(),
+            self::MANAGER => [
+                PermissionEnum::REPLY_ON_TICKET->value,
+                PermissionEnum::VIEW_TICKET_DETAILS->value,
+                PermissionEnum::VIEW_TICKET_STATS->value,
+                PermissionEnum::VIEW_TICKETS->value,
+            ]
+        };
+    }
 }

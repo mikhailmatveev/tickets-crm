@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enums\User\PermissionEnum;
-use App\Enums\User\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserDeleteRequest extends FormRequest
@@ -14,11 +13,7 @@ class UserDeleteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!auth()->check()) {
-            return false;
-        }
-        $user = auth()->user();
-        return $user?->hasRole(RoleEnum::ADMIN) && $user?->can(PermissionEnum::DELETE_USER);
+        return auth()->user()->can(PermissionEnum::DELETE_USER->value);
     }
 
     public function rules(): array
