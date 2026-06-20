@@ -4,6 +4,9 @@ namespace Tests\Feature;
 
 use App\Enums\User\RoleEnum;
 use App\Models\User;
+use App\Notifications\UserCreatedNotification;
+use Exception;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -14,6 +17,7 @@ class UserCreateTest extends UserTest
      * @param RoleEnum $actingAsRole Под какой ролью пользователя авторизуемся
      * @param int $expectedStatus Какой статус ответа ожидаем
      * @return void
+     * @throws Exception
      */
     #[DataProvider('permissionsDataProvider')]
     public function test_create_user_permissions(
@@ -21,17 +25,27 @@ class UserCreateTest extends UserTest
         int $expectedStatus
     ): void
     {
+        // Подменяем реальный механизм отправки уведомлений фиктивным
+        Notification::fake();
+
         $payload = $this->validPayload();
         // Выполняем запрос с переданной ролью
         $response = $this->doActingAsRoleRequest($actingAsRole, $payload);
         // Ожидаем получить статус ответа тот же, что и в провайдере данных
         $response->assertStatus($expectedStatus);
+
         // Ожидаем, что пользователь будет создан
         if ($actingAsRole === RoleEnum::ADMIN) {
             $this->assertDatabaseHas('users', [
                 'email' => $payload['email'],
                 'name' => $payload['name']
             ]);
+
+            // Имитация получения письма
+            Notification::assertSentTo(
+                User::where('email', $payload['email'])->first(),
+                UserCreatedNotification::class
+            );
         }
         // Ожидаем, что пользователь не создастся
         if ($actingAsRole === RoleEnum::MANAGER) {

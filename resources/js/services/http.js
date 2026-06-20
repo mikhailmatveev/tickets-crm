@@ -68,6 +68,10 @@ class Http {
     return await this.client.post('/auth/logout')
   }
 
+  async resendEmail() {
+    return await this.client.post('/api/email/resend')
+  }
+
   async updateTicket (id, requestData) {
     return await this.client.put(`/api/ticket/${id}`, {
       ...requestData

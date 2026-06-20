@@ -52,6 +52,14 @@ const routes = [
     meta: {
       title: 'Войти',
       guestOnly: true
+    },
+  }, {
+    path: '/verify-email',
+    name: 'VerifyEmail',
+    component: () => import('../views/mail/VerifyEmail.vue'),
+    meta: {
+      title: 'Подтвердите email',
+      requiresAuth: true
     }
   }, {
     path: '/404',
@@ -98,6 +106,12 @@ router.beforeEach(async (to) => {
       name: 'Login',
       query: { redirect: to.fullPath }
     }
+  }
+
+  // Редирект на верификацию, если email не подтверждён
+  const user = store.state.user.user
+  if (isAuthenticated && user && !user.email_verified_at && to.name !== 'VerifyEmail') {
+    return { name: 'VerifyEmail' }
   }
 
   if (to.meta.guestOnly && isAuthenticated) {
