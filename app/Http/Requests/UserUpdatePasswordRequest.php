@@ -11,4 +11,10 @@ class UserUpdatePasswordRequest extends FormRequest
     {
         return auth()->user()->can(PermissionEnum::CHANGE_USER_PASSWORD);
     }
+
+    public function rules(): array
+    {
+        // Пароль генерируется автоматически на сервере
+        return [];
+    }
 }
