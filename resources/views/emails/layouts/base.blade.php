@@ -7,76 +7,72 @@
     <title>Ваш аккаунт создан</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            background-color: #fafafa;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+        .header,
+        .button-wrap,
+        .notice,
+        .footer {
+            text-align: center;
+        }
+        .notice,
+        .footer {
+            color: #888;
         }
         .wrapper {
             max-width: 600px;
             margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
+            padding: 30px;
             overflow: hidden;
+            background-color: #fff;
+            border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .header {
-            background-color: #1a56db;
             padding: 32px;
-            text-align: center;
+            background-color: #1a56db;
         }
         .header h1 {
-            color: #ffffff;
             margin: 0;
-            font-size: 22px;
-        }
-        .body {
-            padding: 32px;
-            color: #333333;
-            line-height: 1.6;
+            color: #fff;
+            font-size: 24px;
         }
         .credentials {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 16px 20px;
             margin: 24px 0;
+            padding: 16px 20px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
         }
         .credentials p {
             margin: 6px 0;
-            font-size: 15px;
         }
         .credentials span {
-            font-weight: bold;
             color: #1a56db;
+            font-weight: 700;
         }
         .button-wrap {
-            text-align: center;
             margin: 32px 0;
         }
         .button {
             display: inline-block;
-            background-color: #1a56db;
-            color: #ffffff;
-            text-decoration: none;
             padding: 14px 32px;
+            background-color: #1a56db;
             border-radius: 6px;
-            font-size: 15px;
-            font-weight: bold;
-        }
-        .notice {
-            font-size: 13px;
-            color: #888888;
-            text-align: center;
-            margin-top: 8px;
+            color: #fff;
+            text-decoration: none;
         }
         .footer {
-            background-color: #f8fafc;
             border-top: 1px solid #e2e8f0;
-            padding: 20px 32px;
-            text-align: center;
-            font-size: 13px;
-            color: #888888;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .footer p {
+            margin: 20px 0;
         }
     </style>
 </head>
