@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\DTO\UserCreateData;
+use App\DTO\UserUpdatePasswordData;
 use App\Models\User;
 use App\Notifications\UserCreatedNotification;
+use App\Notifications\UserUpdatedPasswordNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -32,6 +34,22 @@ class UserService
     }
 
     /**
+     * Обновляет пароль пользователю и уведомляет его по почте
+     * @param UserUpdatePasswordData $data DTO с новым паролем пользователя
+     * @return void
+     */
+    public function updatePassword(UserUpdatePasswordData $data): void
+    {
+        $user = User::findOrFail($data->id);
+        $user->password = Hash::make($data->password);
+        $updated = $user->save();
+        // Если пароль успешно обновлён, шлём уведомление пользователю на почту
+        if ($updated) {
+            $this->sendEmailUpdatePasswordNotification($user, $data->password);
+        }
+    }
+
+    /**
      * Отправляет уведомление по E-Mail для подтверждения авторизации
      * @param User $user Модель пользователя
      * @param string $password Оригинальный пароль (в открытом виде в письме)
@@ -53,6 +71,19 @@ class UserService
         $user->notify(new UserCreatedNotification(
             password: $password,
             verificationUrl: $verificationUrl
+        ));
+    }
+
+    /**
+     * Отправляет уведомление о смене пароля пользователю
+     * @param User $user Модель пользователя
+     * @param string $password Оригинальный пароль (в открытом виде в письме)
+     * @return void
+     */
+    public function sendEmailUpdatePasswordNotification(User $user, string $password): void
+    {
+        $user->notify(new UserUpdatedPasswordNotification(
+            password: $password
         ));
     }
 

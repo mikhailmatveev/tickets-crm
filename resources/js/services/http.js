@@ -53,6 +53,10 @@ class Http {
     })
   }
 
+  async updateUserPassword (id) {
+    return await this.client.put(`/api/user/${id}/password`)
+  }
+
   async getUsers () {
     return await this.client.get('/api/users')
   }
