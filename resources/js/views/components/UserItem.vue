@@ -15,13 +15,6 @@
           readonly
         >
       </div>
-      <div role="group">
-        <input
-          type="password"
-          :value="user.email"
-          readonly
-        >
-      </div>
       <details class="dropdown">
         <summary>{{ displayRole }}</summary>
         <ul>
@@ -43,6 +36,14 @@
           </li>
         </ul>
       </details>
+      <button
+        type="button"
+        :disabled="fetchingUpdatePassword"
+        @click="updateUserPassword(user.id)"
+      >
+        <i class="fa fa-refresh" />
+        Пароль
+      </button>
       <button
         type="button"
         :disabled="fetchingDelete"
@@ -78,7 +79,8 @@ export default {
     return {
       displayRole: '',
       fetchingDelete: false,
-      fetchingUpdateRole: false
+      fetchingUpdateRole: false,
+      fetchingUpdatePassword: false
     }
   },
   computed: {
@@ -126,6 +128,16 @@ export default {
         return null
       } finally {
         this.fetchingUpdateRole = false
+      }
+    },
+    async updateUserPassword (id) {
+      this.fetchingUpdatePassword = true
+      try {
+        await http.updateUserPassword(id)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.fetchingUpdatePassword = false
       }
     }
   }

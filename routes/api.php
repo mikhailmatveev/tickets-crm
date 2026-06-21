@@ -4,6 +4,7 @@ use App\Http\Controllers\API\RolesController;
 use App\Http\Controllers\API\StatisticController;
 use App\Http\Controllers\API\TicketController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\UserUpdatePasswordController;
 use App\Http\Controllers\API\UserUpdateRoleController;
 use App\Http\Middleware\TicketRateLimit;
 use App\Http\Resources\UserResource;
@@ -16,6 +17,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/user', [UserController::class, 'create']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
     Route::put('/user/{id}/role', [UserUpdateRoleController::class, 'update']);
+    Route::put('/user/{id}/password', [UserUpdatePasswordController::class, 'update']);
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/roles', [RolesController::class, 'index']);
     Route::get('/tickets', [TicketController::class, 'index']);
