@@ -30,7 +30,7 @@ class UserUpdatedPasswordMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.user.password.updated',
+            view: 'mail.user.password.updated'
         );
     }
 }
