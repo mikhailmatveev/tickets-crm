@@ -1,5 +1,5 @@
-{{-- emails/user/created.blade.php --}}
-@extends('emails.layouts.base')
+{{-- mail/user/created.blade.php --}}
+@extends('mail.layouts.base')
 
 @section('content')
     <p>Здравствуйте, <strong>{{ $name }}</strong>!</p>
@@ -12,7 +12,7 @@
 
     <p>Для активации аккаунта подтвердите ваш email, нажав на кнопку ниже:</p>
 
-    @include('emails.components.verify')
+    @include('mail.components.verify')
 
     <p class="notice">Ссылка действительна 60 минут. Если вы не ожидали этого письма — просто проигнорируйте его.</p>
 @endsection
