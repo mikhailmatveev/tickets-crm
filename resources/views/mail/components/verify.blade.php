@@ -1,4 +1,4 @@
-{{-- emails/components/verify.blade.php --}}
+{{-- mail/components/verify.blade.php --}}
 <div class="button-wrap">
     <a href="{{ $verificationUrl }}" class="button">
         Подтвердить E-Mail
