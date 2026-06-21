@@ -1,4 +1,4 @@
-{{-- emails/layouts/base.blade.php --}}
+{{-- mail/layouts/base.blade.php --}}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
