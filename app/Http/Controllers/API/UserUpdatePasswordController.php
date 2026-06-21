@@ -10,21 +10,19 @@ use Illuminate\Http\JsonResponse;
 
 class UserUpdatePasswordController extends Controller
 {
-    const int PASSWORD_MIN_LENGTH = 8;
-    const int PASSWORD_MAX_LENGTH = 8;
-
     public function __construct(
         protected UserService $userService
     ) {}
 
     public function update(UserUpdatePasswordRequest $request, int $id): JsonResponse
     {
+        // Удобочитаемый пароль, например: "Tiger-Lamp-River-47"
+        $password = implode('-', array_map('ucfirst', fake()->words())) .
+            '-' . fake()->numerify('##');
+
         $data = new UserUpdatePasswordData(
             $id,
-            fake()->password(
-                self::PASSWORD_MIN_LENGTH,
-                self::PASSWORD_MAX_LENGTH
-            )
+            $password
         );
 
         $this->userService->updatePassword($data);
