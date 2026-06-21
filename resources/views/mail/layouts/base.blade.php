@@ -45,8 +45,8 @@
             margin: 24px 0;
             padding: 16px 20px;
             background-color: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
         }
         .credentials p {
             margin: 6px 0;
