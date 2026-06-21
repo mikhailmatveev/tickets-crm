@@ -77,10 +77,13 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>{{ config('app.name') }}</h1>
+    </div>
     <div class="wrapper">
         @yield('content')
         <div class="footer">
-            &copy; {{ date('Y') }} {{ config('app.name') }}. Все права защищены.
+            <p>&copy {{ date('Y') }} {{ config('app.name') }}. Все права защищены.</p>
         </div>
     </div>
 </body>
