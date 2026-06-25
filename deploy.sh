@@ -220,7 +220,7 @@ if [[ "${APP_ENV}" == "production" ]]; then
 fi
 
 # 14: сборка frontend-ассетов для local/dev и production
-echo "Сборка frontend-ассетов для production..."
+echo "Сборка frontend-ассетов для local/dev и production..."
 run_cmd "${COMPOSE[@]}" run --rm node sh -lc "npm ci && npm run build"
 
 # Этап 15: действия только для local/dev (запуск Vite dev-server)
