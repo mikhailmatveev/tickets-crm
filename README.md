@@ -8,11 +8,9 @@
 3. `cp .env.testing.example .env.testing`
 4. `Настроить .env`
 5. `Настроить .env.testing`
-6. `composer install`
-7. `php artisan key:generate`
-8. `php artisan key:generate --env=testing`
-9. `php artisan storage:link`
-10. `npm install`
+6. `./deploy.sh`
+
+Перед запуском деплоя убедиться, что у файла `deploy.sh` есть права на выполнение. Если нет, то надо выполнить `chmod +x deploy.sh`
 
 ## Админ
 
