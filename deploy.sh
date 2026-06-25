@@ -217,15 +217,17 @@ if [[ "${APP_ENV}" == "production" ]]; then
   else
     echo "Первичное получение SSL пропущено. Укажи DOMAIN и EMAIL в .env для bootstrap-сертификата в production."
   fi
+fi
 
-  # 13.3: сборка frontend-ассетов для production
-  echo "Сборка frontend-ассетов для production..."
-  run_cmd "${COMPOSE[@]}" run --rm node sh -lc "npm ci && npm run build"
-else
-  # Этап 14: действия для local/dev (запуск Vite dev server)
-  echo "Запуск контейнера с Vite dev server..."
+# 14: сборка frontend-ассетов для local/dev и production
+echo "Сборка frontend-ассетов для production..."
+run_cmd "${COMPOSE[@]}" run --rm node sh -lc "npm ci && npm run build"
+
+# Этап 15: действия только для local/dev (запуск Vite dev-server)
+if [[ "${APP_ENV}" != "production" ]]; then
+  echo "Запуск контейнера с Vite dev-server..."
   run_cmd "${COMPOSE[@]}" up -d node
 fi
 
-# Этап 15: завершение
+# Этап 16: завершение
 echo "Развёртывание завершено."
