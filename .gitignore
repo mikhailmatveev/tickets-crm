@@ -1,9 +1,11 @@
 *.log
+.codex
 .DS_Store
 .env
 .env.backup
 .env.production
 .env.testing
+.gitconfig
 .phpactor.json
 .phpunit.result.cache
 /.fleet
