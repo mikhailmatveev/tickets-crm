@@ -74,9 +74,7 @@ MAILPIT_UI_PORT=8025
 
 ## Документация
 
-В проекте используется генератор документации Swagger
-Сгенерировать документацию `php artisan l5-swagger:generate`
-Доступно по адресу `/api/documentation`
+Генерируется автоматически при деплое. Доступна по адресу `/api/documentation`
 
 ## Production
 
