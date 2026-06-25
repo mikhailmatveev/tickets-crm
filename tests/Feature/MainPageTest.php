@@ -12,6 +12,9 @@ class MainPageTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
+        // При деплое Vite ещё не поднят и ресурсы отсутствуют, а тесты нужно выполнить до этого шага
+        $this->withoutVite();
+
         $response = $this->get('/');
 
         // 200-й ответ
