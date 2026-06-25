@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS tickets_crm;
+GRANT ALL PRIVILEGES ON tickets_crm.* TO 'root'@'%';
+FLUSH PRIVILEGES;
+
+CREATE DATABASE IF NOT EXISTS tickets_crm_testing;
+GRANT ALL PRIVILEGES ON tickets_crm_testing.* TO 'root'@'%';
+FLUSH PRIVILEGES;
