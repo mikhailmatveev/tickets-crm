@@ -10,24 +10,53 @@
 5. `Настроить .env.testing`
 6. `./deploy.sh`
 
+## Параметры развёртывания
+
+Показать справку `./deploy.sh -h`
+
+```
+$ ./deploy.sh -h
+Использование: ./deploy.sh [--dry-run] [--force-rebuild]
+  --dry-run        Показать команды без выполнения
+  --force-rebuild  Принудительно пересобрать образы без кэша
+```
+
+Деплой на холостую `./deploy.sh --dry-run` 
+
+Показывает только этапы выполнения команд без выполнения самих команд
+
+```
+$ ./deploy.sh --dry-run
+Режим развёртывания: local
+Используемый compose-файл: docker-compose.yml
+Включён режим dry-run: команды будут только показаны.
+Сборка и запуск сервисов: mariadb redis php queue nginx mailpit
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml up -d --build mariadb redis php queue nginx mailpit
+Ожидание готовности MariaDB...
+Проверка готовности MariaDB пропущена в dry-run.
+Установка PHP-зависимостей...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php composer install --no-interaction --prefer-dist --optimize-autoloader
+Запуск тестов...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan test --env=testing
+Генерация документации Swagger...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan l5-swagger:generate
+Запуск Laravel-команд (очистка кэша, миграции, storage:link)...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan config:clear
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan migrate --force
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan cache:clear
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan storage:link
+Проверка необходимости запуска сидеров...
+Проверка сидеров пропущена в dry-run.
+Сборка frontend-ассетов для local/dev и production...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml run --rm node sh -lc npm ci && npm run build
+Запуск контейнера с Vite dev-server...
++ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml up -d node
+Развёртывание завершено.
+```
+
 Перед запуском деплоя убедиться, что у файла `deploy.sh` есть права на выполнение. Если нет, то надо выполнить `chmod +x deploy.sh`
 
-## Порядок выполнения основных команд при деплое
-1. Проверка параметров запуска скрипта, путей и переменных окружения
-2. Подготовка compose-файла и списка сервисов в зависимости от переменной `APP_ENV`
-3. Сборка и запуск сервисов общих для `local` и `production` сборки
-4. Проверка готовности БД
-5. Установка PHP-зависимостей
-6. Генерация `APP_KEY` для `.env` и `.env.testing`
-7. Прогон тестов
-8. Генерация документации Swagger
-9. Выполнение миграций, очистка кэша, `storage:link`
-10. Наполнение базы (seeding)
-11. Действия специфичные для `production` (кеширование, получение сертификата)
-12. Подготовка и запуск Vite dev-сервера (только для `local/dev` окружения)
-13. Завершение
-
-При успешном выполнении деплоя выведется следующее:
+При успешном выполнении деплоя будет такой вывод:
 ```
 [+] Running 1/1
 ✔ Container Tickets-CRM_node  Started  0.2s
