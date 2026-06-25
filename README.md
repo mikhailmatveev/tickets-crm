@@ -12,49 +12,11 @@
 
 ## Параметры развёртывания
 
-Показать справку `./deploy.sh -h`
-
-Пример вывода
-
-```
-$ ./deploy.sh -h
-Использование: ./deploy.sh [--dry-run] [--force-rebuild]
-  --dry-run        Показать команды без выполнения
-  --force-rebuild  Принудительно пересобрать образы без кэша
-```
-
-Деплой на холостую `./deploy.sh --dry-run`. Показывает только этапы выполнения команд без выполнения самих команд
-
-Пример вывода
-
-```
-$ ./deploy.sh --dry-run
-Режим развёртывания: local
-Используемый compose-файл: docker-compose.yml
-Включён режим dry-run: команды будут только показаны.
-Сборка и запуск сервисов: mariadb redis php queue nginx mailpit
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml up -d --build mariadb redis php queue nginx mailpit
-Ожидание готовности MariaDB...
-Проверка готовности MariaDB пропущена в dry-run.
-Установка PHP-зависимостей...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php composer install --no-interaction --prefer-dist --optimize-autoloader
-Запуск тестов...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan test --env=testing
-Генерация документации Swagger...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan l5-swagger:generate
-Запуск Laravel-команд (очистка кэша, миграции, storage:link)...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan config:clear
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan migrate --force
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan cache:clear
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml exec -T php php artisan storage:link
-Проверка необходимости запуска сидеров...
-Проверка сидеров пропущена в dry-run.
-Сборка frontend-ассетов для local/dev и production...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml run --rm node sh -lc npm ci && npm run build
-Запуск контейнера с Vite dev-server...
-+ docker compose --env-file /home/mikhail/tickets-crm/.env -f /home/mikhail/tickets-crm/docker-compose.yml up -d node
-Развёртывание завершено.
-```
+| Параметр                      | Описание                                                                                  |
+|-------------------------------|-------------------------------------------------------------------------------------------|
+| `./deploy.sh -h`              | Показывает справку                                                                        | 
+| `./deploy.sh --dry-run`       | Деплой на холостую. Показывает только этапы выполнения команд без выполнения самих команд |
+| `./deploy.sh --force-rebuild` | Деплой с принудительной пересборкой образов                                               |
 
 Перед запуском деплоя убедиться, что у файла `deploy.sh` есть права на выполнение. Если нет, то надо выполнить `chmod +x deploy.sh`
 
@@ -79,29 +41,27 @@ ADMIN_PASSWORD=password
 
 ## Telescope
 
-Чтобы включить Telescope в `.env` надо добавить параметр
+Доступен по адресу `/telescope`
+
+Проверка прав для доступа к Telescope осуществляется только в `production` окружении,
+то есть, если `APP_ENV=production` в `.env`. В остальных случаях Telescope будет доступен пользователям с любой ролью
 
 Настройки в `.env`
 ```
 TELESCOPE_ENABLED=true
 ```
 
-После чего сервис будет доступен по адресу `/telescope`
-
-Проверка прав для доступа к Telescope осуществляется только в `production` окружении,
-то есть, если `APP_ENV=production` в `.env`. В остальных случаях Telescope будет доступен пользователям с любой ролью
-
 ## Mailpit
 
 Доступен только для `local/dev` окружения
+
+Требуется для проверки отправки сообщений на почту при создании нового пользователя или при изменении пароля пользователю
 
 Настройки в `.env`
 ```
 MAILPIT_SMTP_PORT=1025
 MAILPIT_UI_PORT=8025
 ```
-
-Требуется для проверки отправки сообщение на почту при создании нового пользователя или при изменении пароля пользователю
 
 ## Документация
 
